@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -12,7 +11,7 @@ import {
   BookOpen,
   Calculator,
   Brain,
-  Flask,
+  Beaker,
   Globe,
   Puzzle,
   Music,
@@ -67,7 +66,10 @@ const KingdomMap: React.FC = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedLevel, setSelectedLevel] = useState<ZoneLevel | null>(null);
   const [levelDialogOpen, setLevelDialogOpen] = useState(false);
+  const [levelContentOpen, setLevelContentOpen] = useState(false);
   const [buddyTip, setBuddyTip] = useState("");
+  const [earnedXp, setEarnedXp] = useState(0);
+  const [showXpAnimation, setShowXpAnimation] = useState(false);
   
   const zones: KingdomZone[] = [
     {
@@ -165,7 +167,7 @@ const KingdomMap: React.FC = () => {
       id: 'science-savannah',
       name: 'Science Savannah',
       description: 'Discover plants, animals, and natural phenomena in this wild landscape.',
-      icon: <Flask size={24} />,
+      icon: <Beaker size={24} />,
       color: 'bg-yellow-500',
       position: { top: '60%', left: '35%' },
       status: 'beginner',
@@ -425,13 +427,66 @@ const KingdomMap: React.FC = () => {
   const handleStartLevel = () => {
     if (!selectedLevel) return;
     
+    setLevelDialogOpen(false);
+    // Show level content after a short delay
+    setTimeout(() => {
+      setLevelContentOpen(true);
+    }, 300);
+  };
+  
+  const handleCompleteLevelSuccess = () => {
+    if (!selectedLevel || !selectedZone) return;
+    
+    const xpEarned = selectedLevel.xpReward;
+    setEarnedXp(xpEarned);
+    setShowXpAnimation(true);
+    
+    // Update the level's completion status
+    const updatedZones = zones.map(zone => {
+      if (zone.id === selectedZone.id) {
+        const updatedLevels = zone.levels.map(level => {
+          if (level.id === selectedLevel.id) {
+            return { ...level, isCompleted: true };
+          }
+          return level;
+        });
+        
+        // Calculate new progress
+        const completedCount = updatedLevels.filter(l => l.isCompleted).length;
+        const newProgress = Math.round((completedCount / updatedLevels.length) * 100);
+        
+        return { 
+          ...zone, 
+          levels: updatedLevels,
+          progress: newProgress 
+        };
+      }
+      return zone;
+    });
+    
+    // This would normally update state, but for this demo we'll just show a success message
     toast({
-      title: "Level Started!",
-      description: `You're now playing ${selectedLevel.name}. Have fun!`,
+      title: "Level Completed!",
+      description: `You earned ${xpEarned} XP and unlocked new content!`,
       variant: "default",
     });
     
-    setLevelDialogOpen(false);
+    setLevelContentOpen(false);
+    
+    // Hide XP animation after a delay
+    setTimeout(() => {
+      setShowXpAnimation(false);
+    }, 3000);
+  };
+  
+  const handleCompleteLevelFailure = () => {
+    toast({
+      title: "Keep Trying!",
+      description: "You didn't pass this time, but you're getting better!",
+      variant: "default",
+    });
+    
+    setLevelContentOpen(false);
   };
   
   const getCompletedLevelsCount = (zone: KingdomZone) => {
@@ -458,7 +513,7 @@ const KingdomMap: React.FC = () => {
       case 'language':
         return <BookOpen className="h-5 w-5" />;
       case 'science':
-        return <Flask className="h-5 w-5" />;
+        return <Beaker className="h-5 w-5" />;
       case 'arts':
         return <Puzzle className="h-5 w-5" />;
       case 'social':
@@ -479,6 +534,157 @@ const KingdomMap: React.FC = () => {
       default:
         return null;
     }
+  };
+  
+  // Function to render level content based on selectedLevel
+  const renderLevelContent = () => {
+    if (!selectedLevel || !selectedZone) return null;
+    
+    return (
+      <AlertDialog open={levelContentOpen} onOpenChange={setLevelContentOpen}>
+        <AlertDialogContent className="max-w-4xl">
+          <AlertDialogHeader>
+            <div className="flex items-center gap-2">
+              {getDifficultyBadge(selectedLevel.difficulty)}
+              <AlertDialogTitle>{selectedLevel.name}</AlertDialogTitle>
+            </div>
+            <AlertDialogDescription>
+              {selectedZone.subject === 'math' && (
+                <div className="text-base">Let's solve some math problems!</div>
+              )}
+              {selectedZone.subject === 'language' && (
+                <div className="text-base">Let's practice our language skills!</div>
+              )}
+              {selectedZone.subject === 'science' && (
+                <div className="text-base">Let's discover some scientific concepts!</div>
+              )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          
+          <div className="py-4">
+            <div className="bg-slate-50 rounded-lg p-6 mb-6">
+              {/* Dynamic content based on subject */}
+              {selectedZone.subject === 'math' && (
+                <div className="space-y-6">
+                  <h3 className="font-bold text-lg">Problem 1 of 3</h3>
+                  
+                  <div className="p-4 bg-white rounded-lg border shadow-sm">
+                    <p className="mb-4">If a pizza is cut into 8 equal slices and you eat 3 slices, what fraction of the pizza did you eat?</p>
+                    <div className="grid grid-cols-2 gap-3">
+                      <Button variant="outline" className="py-6" onClick={handleCompleteLevelFailure}>1/3</Button>
+                      <Button variant="outline" className="py-6" onClick={handleCompleteLevelFailure}>3/5</Button>
+                      <Button variant="outline" className="py-6" onClick={handleCompleteLevelSuccess}>3/8</Button>
+                      <Button variant="outline" className="py-6" onClick={handleCompleteLevelFailure}>5/8</Button>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center">
+                    <Progress value={33.3} className="h-2 flex-1" />
+                    <span className="ml-2 text-sm text-gray-500">1/3</span>
+                  </div>
+                </div>
+              )}
+              
+              {selectedZone.subject === 'language' && (
+                <div className="space-y-6">
+                  <h3 className="font-bold text-lg">Grammar Exercise 1 of 3</h3>
+                  
+                  <div className="p-4 bg-white rounded-lg border shadow-sm">
+                    <p className="mb-4">Select the correct pronoun to complete the sentence:</p>
+                    <p className="italic mb-4 text-lg">"______ went to the store to buy groceries."</p>
+                    <div className="grid grid-cols-2 gap-3">
+                      <Button variant="outline" className="py-6" onClick={handleCompleteLevelSuccess}>He</Button>
+                      <Button variant="outline" className="py-6" onClick={handleCompleteLevelFailure}>Him</Button>
+                      <Button variant="outline" className="py-6" onClick={handleCompleteLevelFailure}>His</Button>
+                      <Button variant="outline" className="py-6" onClick={handleCompleteLevelFailure}>Himself</Button>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center">
+                    <Progress value={33.3} className="h-2 flex-1" />
+                    <span className="ml-2 text-sm text-gray-500">1/3</span>
+                  </div>
+                </div>
+              )}
+              
+              {selectedZone.subject === 'science' && (
+                <div className="space-y-6">
+                  <h3 className="font-bold text-lg">Science Question 1 of 3</h3>
+                  
+                  <div className="p-4 bg-white rounded-lg border shadow-sm">
+                    <p className="mb-4">What do plants need to make their own food?</p>
+                    <div className="grid grid-cols-2 gap-3">
+                      <Button variant="outline" className="py-6" onClick={handleCompleteLevelFailure}>Water only</Button>
+                      <Button variant="outline" className="py-6" onClick={handleCompleteLevelFailure}>Soil only</Button>
+                      <Button variant="outline" className="py-6" onClick={handleCompleteLevelFailure}>Air only</Button>
+                      <Button variant="outline" className="py-6" onClick={handleCompleteLevelSuccess}>Sunlight, water, and air</Button>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center">
+                    <Progress value={33.3} className="h-2 flex-1" />
+                    <span className="ml-2 text-sm text-gray-500">1/3</span>
+                  </div>
+                </div>
+              )}
+              
+              {selectedZone.subject === 'arts' && (
+                <div className="space-y-6">
+                  <h3 className="font-bold text-lg">Art Exercise 1 of 3</h3>
+                  
+                  <div className="p-4 bg-white rounded-lg border shadow-sm">
+                    <p className="mb-4">Which of these is a primary color?</p>
+                    <div className="grid grid-cols-2 gap-3">
+                      <Button variant="outline" className="py-6" onClick={handleCompleteLevelFailure}>Green</Button>
+                      <Button variant="outline" className="py-6" onClick={handleCompleteLevelFailure}>Orange</Button>
+                      <Button variant="outline" className="py-6" onClick={handleCompleteLevelSuccess}>Blue</Button>
+                      <Button variant="outline" className="py-6" onClick={handleCompleteLevelFailure}>Purple</Button>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center">
+                    <Progress value={33.3} className="h-2 flex-1" />
+                    <span className="ml-2 text-sm text-gray-500">1/3</span>
+                  </div>
+                </div>
+              )}
+              
+              {selectedZone.subject === 'social' && (
+                <div className="space-y-6">
+                  <h3 className="font-bold text-lg">History Question 1 of 3</h3>
+                  
+                  <div className="p-4 bg-white rounded-lg border shadow-sm">
+                    <p className="mb-4">Which ancient civilization built the pyramids?</p>
+                    <div className="grid grid-cols-2 gap-3">
+                      <Button variant="outline" className="py-6" onClick={handleCompleteLevelFailure}>Romans</Button>
+                      <Button variant="outline" className="py-6" onClick={handleCompleteLevelSuccess}>Egyptians</Button>
+                      <Button variant="outline" className="py-6" onClick={handleCompleteLevelFailure}>Greeks</Button>
+                      <Button variant="outline" className="py-6" onClick={handleCompleteLevelFailure}>Chinese</Button>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center">
+                    <Progress value={33.3} className="h-2 flex-1" />
+                    <span className="ml-2 text-sm text-gray-500">1/3</span>
+                  </div>
+                </div>
+              )}
+            </div>
+            
+            <div className="flex justify-between items-center">
+              <div className="flex items-center gap-2">
+                <BuddyBot size="sm" expression="happy" />
+                <p className="text-sm">Need a hint? Just ask me!</p>
+              </div>
+              
+              <Button variant="outline" onClick={handleCompleteLevelFailure}>
+                Skip for now
+              </Button>
+            </div>
+          </div>
+        </AlertDialogContent>
+      </AlertDialog>
+    );
   };
   
   return (
@@ -572,207 +778,4 @@ const KingdomMap: React.FC = () => {
                     </span>
                   )}
                 </div>
-                <div className="text-white text-xs font-bold">{zone.name.split(' ')[0]}</div>
-              </div>
-            </div>
-          ))}
-          
-          {/* Buddy Bot helper */}
-          <div className="absolute bottom-5 right-5">
-            <div className="flex items-end">
-              <div className="mr-3 bg-white p-3 rounded-lg shadow-md max-w-xs opacity-90">
-                <p className="text-sm">{buddyTip}</p>
-              </div>
-              <BuddyBot size="md" expression="happy" animated={true} />
-            </div>
-          </div>
-        </div>
-        
-        {/* Selected zone info overlay */}
-        <AlertDialog open={dialogOpen} onOpenChange={setDialogOpen}>
-          <AlertDialogContent className="max-w-3xl">
-            {selectedZone && (
-              <>
-                <AlertDialogHeader>
-                  <div className="flex items-center">
-                    <div 
-                      className={cn(
-                        "flex-shrink-0 w-12 h-12 rounded-lg flex items-center justify-center text-white mr-4",
-                        selectedZone.color
-                      )}
-                    >
-                      {selectedZone.icon}
-                    </div>
-                    <div>
-                      <AlertDialogTitle className="text-xl flex items-center gap-2">
-                        {selectedZone.name}
-                        {getStatusBadge(selectedZone.status)}
-                      </AlertDialogTitle>
-                      <AlertDialogDescription className="text-base mt-1">
-                        {selectedZone.description}
-                      </AlertDialogDescription>
-                    </div>
-                  </div>
-                </AlertDialogHeader>
-                
-                <div className="py-4">
-                  {/* Zone progress overview */}
-                  <div className="mb-6">
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="text-sm text-gray-500">Zone Progress:</span>
-                      <span className="text-sm font-medium">
-                        {getCompletedLevelsCount(selectedZone)}/{selectedZone.levels.length} Levels Completed
-                      </span>
-                    </div>
-                    <Progress value={selectedZone.progress} className="h-2" />
-                  </div>
-                  
-                  {selectedZone.locked ? (
-                    <div className="bg-gray-50 rounded-lg p-6 text-center">
-                      <Lock className="mx-auto h-8 w-8 text-gray-400 mb-2" />
-                      <h3 className="text-lg font-medium text-gray-900 mb-1">Zone Locked</h3>
-                      <p className="text-gray-500 mb-4">
-                        Complete {zones.find(z => z.id === selectedZone.requiredZoneId)?.name || 'previous zones'} to unlock this zone!
-                      </p>
-                      <Button variant="outline" onClick={() => setDialogOpen(false)}>
-                        Got it
-                      </Button>
-                    </div>
-                  ) : (
-                    <div className="space-y-3">
-                      <h3 className="font-medium">Available Levels</h3>
-                      {selectedZone.levels.map((level, index) => (
-                        <div
-                          key={level.id}
-                          className={cn(
-                            "p-4 rounded-lg border cursor-pointer transition-colors hover:bg-gray-50",
-                            level.isCompleted ? "border-green-200 bg-green-50" : "border-gray-200"
-                          )}
-                          onClick={() => handleLevelSelect(level)}
-                        >
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                              <div className={cn(
-                                "w-8 h-8 rounded-full flex items-center justify-center text-white font-bold",
-                                level.isCompleted ? "bg-green-500" : selectedZone.color
-                              )}>
-                                {level.isCompleted ? (
-                                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="h-5 w-5">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                  </svg>
-                                ) : (
-                                  index + 1
-                                )}
-                              </div>
-                              <div>
-                                <div className="font-medium">{level.name}</div>
-                                <div className="text-sm text-gray-500">{level.description}</div>
-                              </div>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              {getDifficultyBadge(level.difficulty)}
-                              <div className="text-xs text-gray-500">{level.timeEstimate}</div>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-                
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Close</AlertDialogCancel>
-                </AlertDialogFooter>
-              </>
-            )}
-          </AlertDialogContent>
-        </AlertDialog>
-        
-        {/* Level details dialog */}
-        <AlertDialog open={levelDialogOpen} onOpenChange={setLevelDialogOpen}>
-          <AlertDialogContent>
-            {selectedLevel && (
-              <>
-                <AlertDialogHeader>
-                  <div className="flex items-center gap-2 mb-2">
-                    {getDifficultyBadge(selectedLevel.difficulty)}
-                    <span className="text-xs text-gray-500">{selectedLevel.timeEstimate}</span>
-                  </div>
-                  <AlertDialogTitle>{selectedLevel.name}</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    {selectedLevel.description}
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                
-                <div className="py-4">
-                  <div className="bg-gray-50 rounded-lg p-4 mb-4">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Star className="h-5 w-5 text-yellow-500" />
-                        <span className="font-medium">Rewards</span>
-                      </div>
-                      <span className="font-bold text-lovable-purple">+{selectedLevel.xpReward} XP</span>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <BuddyBot size="sm" expression="excited" />
-                    <p>Ready to start this adventure? I'll guide you through it!</p>
-                  </div>
-                </div>
-                
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction onClick={handleStartLevel}>
-                    {selectedLevel.isCompleted ? 'Replay Level' : 'Start Level'}
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </>
-            )}
-          </AlertDialogContent>
-        </AlertDialog>
-      </div>
-      
-      {/* Achievement summary */}
-      <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card>
-          <CardContent className="p-4 flex items-center gap-3">
-            <div className="bg-lovable-purple/10 p-3 rounded-full">
-              <Trophy className="h-6 w-6 text-lovable-purple" />
-            </div>
-            <div>
-              <h3 className="font-medium">Total Progress</h3>
-              <p className="text-2xl font-bold">35%</p>
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardContent className="p-4 flex items-center gap-3">
-            <div className="bg-lovable-green/10 p-3 rounded-full">
-              <Star className="h-6 w-6 text-lovable-green" />
-            </div>
-            <div>
-              <h3 className="font-medium">Levels Completed</h3>
-              <p className="text-2xl font-bold">5/24</p>
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardContent className="p-4 flex items-center gap-3">
-            <div className="bg-lovable-blue/10 p-3 rounded-full">
-              <Zap className="h-6 w-6 text-lovable-blue" />
-            </div>
-            <div>
-              <h3 className="font-medium">Weekly Challenges</h3>
-              <p className="text-2xl font-bold">1 Available</p>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    </div>
-  );
-};
-
-export default KingdomMap;
+                <div className="text-white text-xs font-bold">{zone.name.split(' ')[0]}
