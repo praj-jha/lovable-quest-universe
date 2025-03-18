@@ -1,9 +1,9 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
+import { Calendar } from '@/components/ui/calendar';
 import { 
   Calculator, 
   ShoppingCart, 
@@ -13,7 +13,8 @@ import {
   Brain, 
   Clock, 
   Users, 
-  Star 
+  Star,
+  Calendar as CalendarIcon
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -120,7 +121,7 @@ const FamilyQuestList: React.FC = () => {
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Family Quests</h2>
         <Button variant="outline" className="gap-2">
-          <Calendar size={16} />
+          <CalendarIcon size={16} />
           View Calendar
         </Button>
       </div>
