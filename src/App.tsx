@@ -11,6 +11,8 @@ import MainLayout from "./components/Layout/MainLayout";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 const Dashboard = lazy(() => import("./pages/Dashboard"));
+const FamilyMode = lazy(() => import("./pages/FamilyMode"));
+const ParentAnalytics = lazy(() => import("./pages/ParentAnalytics"));
 
 const queryClient = new QueryClient();
 
@@ -25,6 +27,16 @@ const App = () => (
           <Route path="/dashboard" element={
             <Suspense fallback={<div className="w-full h-screen flex items-center justify-center">Loading...</div>}>
               <MainLayout><Dashboard /></MainLayout>
+            </Suspense>
+          } />
+          <Route path="/family" element={
+            <Suspense fallback={<div className="w-full h-screen flex items-center justify-center">Loading...</div>}>
+              <MainLayout><FamilyMode /></MainLayout>
+            </Suspense>
+          } />
+          <Route path="/parent-analytics" element={
+            <Suspense fallback={<div className="w-full h-screen flex items-center justify-center">Loading...</div>}>
+              <MainLayout><ParentAnalytics /></MainLayout>
             </Suspense>
           } />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

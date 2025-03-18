@@ -1,13 +1,14 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 import HeroSection from '@/components/Hero/HeroSection';
 import FeaturesSection from '@/components/Features/FeaturesSection';
-import KingdomMap from '@/components/Kingdom/KingdomMap';
+import EnhancedKingdomMap from '@/components/Kingdom/EnhancedKingdomMap';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import BuddyBot from '@/components/Buddy/BuddyBot';
-import { Users, Video, Shield, CheckCircle } from 'lucide-react';
+import { Users, Video, Shield, CheckCircle, ArrowRight } from 'lucide-react';
 
 const Index = () => {
   return (
@@ -18,8 +19,87 @@ const Index = () => {
       {/* Features Section */}
       <FeaturesSection />
       
+      {/* Experience Components Section */}
+      <section className="py-10 px-4 bg-gradient-to-b from-white to-blue-50">
+        <div className="container mx-auto">
+          <div className="text-center max-w-3xl mx-auto mb-8">
+            <h2 className="text-2xl md:text-3xl font-bold mb-4">
+              Start Your <span className="text-gradient-orange-yellow">Learning Adventure</span> Today
+            </h2>
+            <p className="text-lg text-gray-600">
+              Explore our key features and see what makes Lovable Quest special for students, families, and educators.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+            <Link to="/dashboard" className="block">
+              <Card className="h-full transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+                <CardContent className="p-6 flex flex-col h-full">
+                  <div className="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center mb-4 text-lovable-blue">
+                    <BookOpen size={24} />
+                  </div>
+                  
+                  <h3 className="text-xl font-bold mb-2">Student Dashboard</h3>
+                  <p className="text-gray-600 flex-grow">
+                    Interactive lessons, achievements, and personalized learning journeys for students.
+                  </p>
+                  
+                  <Button className="mt-4 w-full gap-2">
+                    Explore Dashboard
+                    <ArrowRight size={16} />
+                  </Button>
+                </CardContent>
+              </Card>
+            </Link>
+            
+            <Link to="/family" className="block">
+              <Card className="h-full transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border-2 border-lovable-purple">
+                <div className="absolute top-0 right-0 transform translate-x-2 -translate-y-2">
+                  <Badge className="bg-lovable-purple shadow-lg">New!</Badge>
+                </div>
+                <CardContent className="p-6 flex flex-col h-full">
+                  <div className="w-12 h-12 rounded-lg bg-purple-100 flex items-center justify-center mb-4 text-lovable-purple">
+                    <Users size={24} />
+                  </div>
+                  
+                  <h3 className="text-xl font-bold mb-2">Family Learning Mode</h3>
+                  <p className="text-gray-600 flex-grow">
+                    Collaborative quests, family activities, and exciting challenges to learn together.
+                  </p>
+                  
+                  <Button className="mt-4 w-full gap-2">
+                    Join Family Mode
+                    <ArrowRight size={16} />
+                  </Button>
+                </CardContent>
+              </Card>
+            </Link>
+            
+            <Link to="/parent-analytics" className="block">
+              <Card className="h-full transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+                <CardContent className="p-6 flex flex-col h-full">
+                  <div className="w-12 h-12 rounded-lg bg-green-100 flex items-center justify-center mb-4 text-green-600">
+                    <ChartBar size={24} />
+                  </div>
+                  
+                  <h3 className="text-xl font-bold mb-2">Parent Analytics</h3>
+                  <p className="text-gray-600 flex-grow">
+                    Detailed insights, progress tracking and personalized recommendations for parents.
+                  </p>
+                  
+                  <Button className="mt-4 w-full gap-2">
+                    View Analytics
+                    <ArrowRight size={16} />
+                  </Button>
+                </CardContent>
+              </Card>
+            </Link>
+          </div>
+        </div>
+      </section>
+      
       {/* Kingdom Map Section */}
-      <section id="kingdom-map" className="py-20 px-4 bg-gradient-to-b from-white to-blue-50">
+      <section id="kingdom-map" className="py-20 px-4 bg-gradient-to-b from-blue-50 to-white">
         <div className="container mx-auto">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <Badge className="mb-4">Interactive Universe</Badge>
@@ -31,7 +111,7 @@ const Index = () => {
             </p>
           </div>
           
-          <KingdomMap />
+          <EnhancedKingdomMap />
         </div>
       </section>
       
@@ -66,9 +146,11 @@ const Index = () => {
                 ))}
               </div>
               
-              <Button className="mt-8 rounded-full" size="lg">
-                Learn More For Parents
-              </Button>
+              <Link to="/family">
+                <Button className="mt-8 rounded-full" size="lg">
+                  Try Family Mode
+                </Button>
+              </Link>
             </div>
             
             <div className="relative">
@@ -354,6 +436,48 @@ const Index = () => {
         </div>
       </section>
     </div>
+  );
+};
+
+const BookOpen = (props: React.ComponentProps<typeof Users>) => {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+      <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+    </svg>
+  );
+};
+
+const ChartBar = (props: React.ComponentProps<typeof Users>) => {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect x="3" y="12" width="6" height="8" rx="1"></rect>
+      <rect x="9" y="8" width="6" height="12" rx="1"></rect>
+      <rect x="15" y="4" width="6" height="16" rx="1"></rect>
+      <path d="M4 20h16"></path>
+    </svg>
   );
 };
 
