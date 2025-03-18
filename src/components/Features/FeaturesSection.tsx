@@ -1,7 +1,7 @@
 
 import React from 'react';
-import Card, { CardContent } from '@/components/UI/Card';
-import Badge from '@/components/UI/Badge';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { Book, Users, Video, Brain, Camera, Star } from 'lucide-react';
 
 const FeaturesSection: React.FC = () => {
@@ -54,7 +54,7 @@ const FeaturesSection: React.FC = () => {
     <div className="py-20 bg-white">
       <div className="container mx-auto px-4">
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <Badge variant="primary" className="mb-4">Features</Badge>
+          <Badge className="mb-4">Features</Badge>
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
             Everything your child needs to <span className="text-gradient-blue-green">love learning</span>
           </h2>
@@ -77,7 +77,7 @@ const FeaturesSection: React.FC = () => {
                 <div className="mb-2">
                   <Badge 
                     variant={
-                      feature.category === "learning" ? "primary" : 
+                      feature.category === "learning" ? "default" : 
                       feature.category === "family" ? "secondary" : 
                       feature.category === "premium" ? "outline" : 
                       "default"

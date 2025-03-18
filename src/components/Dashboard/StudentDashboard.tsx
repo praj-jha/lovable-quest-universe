@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import Card, { CardContent, CardHeader } from '@/components/UI/Card';
-import Button from '@/components/UI/Button';
-import Badge from '@/components/UI/Badge';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import BuddyBot from '@/components/Buddy/BuddyBot';
 import { 
   BookOpen, 
@@ -37,7 +37,6 @@ interface AchievementProps {
 const StudentDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState('overview');
   
-  // Sample data
   const recentLessons: LessonProps[] = [
     {
       id: '1',
@@ -110,7 +109,6 @@ const StudentDashboard: React.FC = () => {
   return (
     <div className="w-full">
       <div className="flex flex-col">
-        {/* Welcome section */}
         <div className="bg-blue-50 py-8">
           <div className="container mx-auto px-4">
             <div className="flex flex-col md:flex-row items-center justify-between">
@@ -146,7 +144,6 @@ const StudentDashboard: React.FC = () => {
           </div>
         </div>
         
-        {/* Dashboard tabs */}
         <div className="border-b border-gray-200">
           <div className="container mx-auto px-4">
             <div className="flex space-x-4 overflow-x-auto pb-2">
@@ -167,25 +164,23 @@ const StudentDashboard: React.FC = () => {
           </div>
         </div>
         
-        {/* Dashboard content */}
         <div className="container mx-auto px-4 py-8">
           {activeTab === 'overview' && (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {/* Left column */}
               <div className="lg:col-span-2 space-y-8">
-                {/* Continue learning section */}
                 <div>
                   <div className="flex items-center justify-between mb-4">
                     <h2 className="text-xl font-bold">Continue Learning</h2>
-                    <Button variant="ghost" size="sm" icon={<ArrowRight size={16} />} iconPosition="right">
+                    <Button variant="ghost" size="sm" className="gap-2">
                       View All
+                      <ArrowRight size={16} />
                     </Button>
                   </div>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {recentLessons.map((lesson) => (
-                      <Card key={lesson.id} className="h-full" hoverEffect>
-                        <div className="aspect-video w-full overflow-hidden rounded-t-2xl bg-gray-100">
+                      <Card key={lesson.id} className="h-full transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+                        <div className="aspect-video w-full overflow-hidden rounded-t-lg bg-gray-100">
                           <img 
                             src={lesson.image} 
                             alt={lesson.title}
@@ -195,9 +190,9 @@ const StudentDashboard: React.FC = () => {
                         <CardContent className="p-4">
                           <Badge 
                             variant={
-                              lesson.subject === 'Math' ? 'primary' : 
-                              lesson.subject === 'Language' ? 'secondary' : 
-                              'outline'
+                              lesson.subject === 'Math' ? "default" : 
+                              lesson.subject === 'Language' ? "secondary" : 
+                              "outline"
                             }
                             className="mb-2"
                           >
@@ -222,8 +217,7 @@ const StudentDashboard: React.FC = () => {
                           </div>
                           
                           <Button 
-                            className="w-full mt-4" 
-                            rounded="lg"
+                            className="w-full mt-4 rounded-lg" 
                             size="sm"
                           >
                             Continue
@@ -234,7 +228,6 @@ const StudentDashboard: React.FC = () => {
                   </div>
                 </div>
                 
-                {/* Quick tools */}
                 <div>
                   <h2 className="text-xl font-bold mb-4">Quick Tools</h2>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -244,7 +237,7 @@ const StudentDashboard: React.FC = () => {
                       { icon: <BarChart size={24} />, title: 'Progress Report', color: 'bg-lovable-green text-white' },
                       { icon: <Calendar size={24} />, title: 'Schedule Session', color: 'bg-lovable-orange text-white' },
                     ].map((tool, index) => (
-                      <Card key={index} className="h-full cursor-pointer" hoverEffect>
+                      <Card key={index} className="h-full cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
                         <CardContent className="p-4 flex flex-col items-center text-center">
                           <div className={`w-12 h-12 rounded-full ${tool.color} flex items-center justify-center mb-3`}>
                             {tool.icon}
@@ -257,9 +250,7 @@ const StudentDashboard: React.FC = () => {
                 </div>
               </div>
               
-              {/* Right column */}
               <div className="space-y-8">
-                {/* Achievements */}
                 <Card>
                   <CardHeader className="flex justify-between items-center">
                     <h2 className="text-xl font-bold">Recent Achievements</h2>
@@ -276,7 +267,7 @@ const StudentDashboard: React.FC = () => {
                             <div className="flex items-center">
                               <h3 className="font-bold text-sm">{achievement.title}</h3>
                               {achievement.isNew && (
-                                <Badge variant="primary" className="ml-2">New</Badge>
+                                <Badge className="ml-2">New</Badge>
                               )}
                             </div>
                             <p className="text-xs text-gray-500 mt-1">{achievement.description}</p>
@@ -288,7 +279,6 @@ const StudentDashboard: React.FC = () => {
                   </CardContent>
                 </Card>
                 
-                {/* Upcoming events */}
                 <Card>
                   <CardHeader className="flex justify-between items-center">
                     <h2 className="text-xl font-bold">Upcoming Events</h2>
@@ -305,7 +295,7 @@ const StudentDashboard: React.FC = () => {
                             <h3 className="font-bold text-sm">{event.title}</h3>
                             <p className="text-xs text-gray-500 mt-1">{event.time}</p>
                           </div>
-                          <Button size="sm" variant="outline" rounded="full">
+                          <Button size="sm" variant="outline" className="rounded-full">
                             Join
                           </Button>
                         </div>
@@ -320,7 +310,6 @@ const StudentDashboard: React.FC = () => {
                   </CardContent>
                 </Card>
                 
-                {/* Family activity */}
                 <Card>
                   <CardHeader>
                     <h2 className="text-xl font-bold">Family Activity</h2>
@@ -339,7 +328,6 @@ const StudentDashboard: React.FC = () => {
             </div>
           )}
           
-          {/* Other tabs would be implemented similarly */}
           {activeTab !== 'overview' && (
             <div className="py-16 text-center">
               <h2 className="text-2xl font-bold mb-2">Coming Soon!</h2>

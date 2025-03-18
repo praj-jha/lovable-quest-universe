@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
-import Card, { CardContent } from '../UI/Card';
-import Badge from '../UI/Badge';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 
 interface KingdomZone {
@@ -97,11 +97,11 @@ const KingdomMap: React.FC = () => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'beginner':
-        return <Badge variant="success">Beginner</Badge>;
+        return <Badge variant="secondary">Beginner</Badge>;
       case 'intermediate':
-        return <Badge variant="warning">Intermediate</Badge>;
+        return <Badge variant="outline">Intermediate</Badge>;
       case 'advanced':
-        return <Badge variant="primary">Advanced</Badge>;
+        return <Badge>Advanced</Badge>;
       default:
         return null;
     }

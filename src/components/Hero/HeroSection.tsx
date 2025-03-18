@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import Button from '@/components/UI/Button';
+import { Button } from '@/components/ui/button';
 import BuddyBot from '@/components/Buddy/BuddyBot';
 import { ChevronRight, Star, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -59,19 +59,16 @@ const HeroSection: React.FC = () => {
               <div className="flex flex-col sm:flex-row gap-4 pt-4">
                 <Button 
                   size="lg" 
-                  rounded="full"
-                  className="w-full sm:w-auto shadow-lg"
-                  icon={<ChevronRight size={18} />}
-                  iconPosition="right"
+                  className="w-full sm:w-auto shadow-lg rounded-full"
                 >
                   Start Free Trial
+                  <ChevronRight size={18} />
                 </Button>
                 
                 <Button 
                   variant="outline" 
                   size="lg" 
-                  rounded="full"
-                  className="w-full sm:w-auto"
+                  className="w-full sm:w-auto rounded-full"
                 >
                   See How It Works
                 </Button>

@@ -3,9 +3,9 @@ import React from 'react';
 import HeroSection from '@/components/Hero/HeroSection';
 import FeaturesSection from '@/components/Features/FeaturesSection';
 import KingdomMap from '@/components/Kingdom/KingdomMap';
-import Card, { CardContent } from '@/components/UI/Card';
-import Button from '@/components/UI/Button';
-import Badge from '@/components/UI/Badge';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import BuddyBot from '@/components/Buddy/BuddyBot';
 import { Users, Video, Shield, CheckCircle } from 'lucide-react';
 
@@ -22,7 +22,7 @@ const Index = () => {
       <section id="kingdom-map" className="py-20 px-4 bg-gradient-to-b from-white to-blue-50">
         <div className="container mx-auto">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <Badge variant="primary" className="mb-4">Interactive Universe</Badge>
+            <Badge className="mb-4">Interactive Universe</Badge>
             <h2 className="text-3xl md:text-4xl font-bold mb-6">
               Explore the <span className="text-gradient-blue-green">Lovable Kingdom Map</span>
             </h2>
@@ -66,7 +66,7 @@ const Index = () => {
                 ))}
               </div>
               
-              <Button className="mt-8" size="lg" rounded="full">
+              <Button className="mt-8 rounded-full" size="lg">
                 Learn More For Parents
               </Button>
             </div>
@@ -95,9 +95,9 @@ const Index = () => {
                           <div className="flex justify-between items-center">
                             <h4 className="font-bold">{activity.title}</h4>
                             <Badge variant={
-                              activity.difficulty === "Easy" ? "success" : 
-                              activity.difficulty === "Medium" ? "warning" : 
-                              "primary"
+                              activity.difficulty === "Easy" ? "secondary" : 
+                              activity.difficulty === "Medium" ? "outline" : 
+                              "default"
                             }>
                               {activity.difficulty}
                             </Badge>
@@ -175,7 +175,7 @@ const Index = () => {
                                 <h5 className="font-medium">{plan.title}</h5>
                                 <p className="text-xs text-gray-500">{plan.subject}</p>
                               </div>
-                              <Badge variant={plan.status === "Ready" ? "success" : "warning"}>
+                              <Badge variant={plan.status === "Ready" ? "secondary" : "outline"}>
                                 {plan.status}
                               </Badge>
                             </div>
@@ -215,7 +215,7 @@ const Index = () => {
                 ))}
               </div>
               
-              <Button className="mt-8" variant="outline" size="lg" rounded="full">
+              <Button className="mt-8 rounded-full" variant="outline" size="lg">
                 Discover Educator Tools
               </Button>
             </div>
@@ -227,7 +227,7 @@ const Index = () => {
       <section className="py-20 px-4 bg-white">
         <div className="container mx-auto">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <Badge variant="primary" className="mb-4">Pricing Plans</Badge>
+            <Badge className="mb-4">Pricing Plans</Badge>
             <h2 className="text-3xl md:text-4xl font-bold mb-6">
               Find the perfect plan for your <span className="text-gradient-blue-green">child's journey</span>
             </h2>
@@ -289,7 +289,7 @@ const Index = () => {
               >
                 {plan.popular && (
                   <div className="absolute top-0 right-0 transform translate-x-2 -translate-y-2">
-                    <Badge variant="primary" className="shadow-lg">Most Popular</Badge>
+                    <Badge className="shadow-lg">Most Popular</Badge>
                   </div>
                 )}
                 <CardContent className="p-6">
@@ -310,9 +310,8 @@ const Index = () => {
                   </ul>
                   
                   <Button 
-                    className="w-full" 
-                    variant={plan.popular ? 'primary' : 'outline'}
-                    rounded="full"
+                    className="w-full rounded-full" 
+                    variant={plan.popular ? 'default' : 'outline'}
                   >
                     {plan.buttonText}
                   </Button>
@@ -341,15 +340,13 @@ const Index = () => {
             <Button 
               size="lg"
               variant="outline" 
-              className="border-white text-white hover:bg-white hover:text-lovable-purple"
-              rounded="full"
+              className="border-white text-white hover:bg-white hover:text-lovable-purple rounded-full"
             >
               Start Free Trial
             </Button>
             <Button 
               size="lg" 
-              className="bg-white text-lovable-purple hover:bg-gray-100"
-              rounded="full"
+              className="bg-white text-lovable-purple hover:bg-gray-100 rounded-full"
             >
               Book a Demo
             </Button>
