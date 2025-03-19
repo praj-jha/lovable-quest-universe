@@ -1,501 +1,522 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { 
   Users, 
+  Calendar, 
+  Video, 
+  FileText, 
   Clock, 
-  Award, 
   Star, 
-  Calendar,
+  ArrowRight,
+  BookOpen,
+  Award,
+  Smartphone,
   CheckCircle,
-  SmartphoneCharging,
-  Timer,
-  Sparkles
+  PlusCircle
 } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useToast } from '@/hooks/use-toast';
+import { familyQuestsData } from '../Family/QuestData';
 
 const ParentCoLearning: React.FC = () => {
-  const familyActivities = [
-    {
-      title: "Kitchen Science Lab",
-      category: "Science",
-      description: "Turn your kitchen into a science lab with simple experiments using everyday ingredients.",
-      duration: "30 mins",
-      difficulty: "Easy",
-      materials: ["Baking soda", "Vinegar", "Food coloring", "Common kitchen items"],
-      benefits: ["Applied science", "Observation skills", "Cause & effect"],
-      digitalRewards: "Science Explorer Badge + 100 XP",
-      offline: true
-    },
-    {
-      title: "Market Math Challenge",
-      category: "Mathematics",
-      description: "Practice math skills during your next trip to the local market or grocery store.",
-      duration: "45 mins",
-      difficulty: "Medium",
-      materials: ["Shopping list", "Calculator (optional)", "Notebook"],
-      benefits: ["Real-world math", "Budgeting skills", "Mental calculation"],
-      digitalRewards: "Math Whiz Badge + 120 XP",
-      offline: true
-    },
-    {
-      title: "Family Story Relay",
-      category: "Language",
-      description: "Create a story together where each family member adds a part, practicing narrative skills.",
-      duration: "20 mins",
-      difficulty: "Easy",
-      materials: ["Imagination", "Paper & pencil (optional)"],
-      benefits: ["Creativity", "Listening skills", "Narrative development"],
-      digitalRewards: "Storyteller Badge + 90 XP", 
-      offline: true
-    },
-    {
-      title: "Heritage Photo Project",
-      category: "Social Studies",
-      description: "Document family heritage and local history through photos and interviews.",
-      duration: "60 mins",
-      difficulty: "Medium",
-      materials: ["Camera/smartphone", "Family photos", "Interview questions"],
-      benefits: ["Cultural awareness", "Interview skills", "Digital organization"],
-      digitalRewards: "Heritage Keeper Badge + 150 XP",
-      offline: false
-    },
-    {
-      title: "Weekend Nature Journal",
-      category: "Environmental Studies",
-      description: "Observe and document plants and animals in your neighborhood or nearby park.",
-      duration: "40 mins",
-      difficulty: "Easy",
-      materials: ["Notebook", "Pencils/colors", "Magnifying glass (optional)"],
-      benefits: ["Observation skills", "Classification", "Environmental awareness"],
-      digitalRewards: "Nature Explorer Badge + 110 XP",
-      offline: true
-    },
-    {
-      title: "Family Fitness Challenge",
-      category: "Physical Education",
-      description: "Complete a series of fun physical activities together as a family team.",
-      duration: "30 mins",
-      difficulty: "Medium",
-      materials: ["Open space", "Basic household items"],
-      benefits: ["Physical activity", "Teamwork", "Motor skills"],
-      digitalRewards: "Active Family Badge + 100 XP",
-      offline: true
-    }
-  ];
-
+  const { toast } = useToast();
+  const [activeTab, setActiveTab] = useState('today');
+  
+  // Sample parent schedule for the co-learning feature
+  const schedule = {
+    today: [
+      {
+        id: 'act1',
+        time: '4:00 PM',
+        title: 'Math Practice: Fractions',
+        description: 'Help your child understand fractions using everyday objects',
+        duration: '15 min',
+        materials: ['Paper plate', 'Scissors'],
+        completed: false,
+        xp: 20
+      },
+      {
+        id: 'act2',
+        time: '7:30 PM',
+        title: 'Bedtime Story Discussion',
+        description: 'Read "The Lion and the Mouse" and discuss the moral of helping others',
+        duration: '10 min',
+        materials: ['Storybook or mobile app'],
+        completed: true,
+        xp: 15
+      }
+    ],
+    thisWeek: [
+      {
+        id: 'act3',
+        day: 'Wednesday',
+        time: '5:30 PM',
+        title: 'Science Observation: Weather',
+        description: 'Record temperature, cloud patterns, and rainfall predictions together',
+        duration: '20 min',
+        materials: ['Notebook', 'Thermometer (optional)'],
+        completed: false,
+        xp: 25
+      },
+      {
+        id: 'act4',
+        day: 'Thursday',
+        time: 'Any time',
+        title: 'Kitchen Math: Double the Recipe',
+        description: 'Practice doubling ingredient measurements while making a simple recipe',
+        duration: '30 min',
+        materials: ['Kitchen ingredients', 'Measuring cups'],
+        completed: false,
+        xp: 35
+      },
+      {
+        id: 'act5',
+        day: 'Saturday',
+        time: 'Morning',
+        title: 'Family Quest: "Art from Waste"',
+        description: 'Create art projects using recyclable materials while learning about sustainability',
+        duration: '60 min',
+        materials: ['Used bottles', 'Old newspapers', 'Colors'],
+        completed: false,
+        xp: 70
+      }
+    ],
+    parentTips: [
+      {
+        id: 'tip1',
+        title: 'The Magic of "I Wonder..."',
+        description: 'Start questions with "I wonder..." to encourage curiosity rather than testing knowledge',
+        category: 'Communication Strategy'
+      },
+      {
+        id: 'tip2',
+        title: 'Praise the Process, Not Just Results',
+        description: 'Say "I noticed how hard you worked on that" instead of just "Good job"',
+        category: 'Positive Reinforcement'
+      },
+      {
+        id: 'tip3',
+        title: 'Learning While Commuting',
+        description: 'Turn travel time into learning time with simple conversation games about surroundings',
+        category: 'Everyday Learning'
+      }
+    ]
+  };
+  
+  const handleCompleteActivity = (activityId: string) => {
+    toast({
+      title: "Activity Completed!",
+      description: "Great work! You've earned parent co-learning XP",
+    });
+  };
+  
+  const handleSendReminder = () => {
+    toast({
+      title: "Reminder Sent",
+      description: "A WhatsApp notification has been sent to remind you about the scheduled activities",
+    });
+  };
+  
+  const handleScheduleCustom = () => {
+    toast({
+      title: "Schedule Your Own Activity",
+      description: "Create a custom co-learning activity based on your child's interests",
+    });
+  };
+  
+  const featuredQuest = familyQuestsData.find(quest => quest.id === '6'); // Art from Waste
+  
   return (
     <section className="py-10">
       <div className="text-center mb-12">
         <div className="flex justify-center mb-4">
           <div className="relative">
-            <Users className="h-16 w-16 text-lovable-green" />
+            <Users className="h-16 w-16 text-lovable-purple" />
           </div>
         </div>
         <h2 className="text-3xl font-bold mb-4">Parent Co-Learning Mode</h2>
         <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-          Strengthen family bonds while boosting learning outcomes with activities designed 
-          for parents and children to enjoy together.
+          Transform everyday moments into powerful learning opportunities with bite-sized
+          activities that parents and children can enjoy together.
         </p>
       </div>
 
-      <Tabs defaultValue="activities" className="w-full mb-10">
-        <TabsList className="grid w-full max-w-md mx-auto grid-cols-3">
-          <TabsTrigger value="activities">Family Activities</TabsTrigger>
-          <TabsTrigger value="benefits">Benefits</TabsTrigger>
-          <TabsTrigger value="weekend">Weekend Challenges</TabsTrigger>
-        </TabsList>
-        
-        <TabsContent value="activities" className="mt-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {familyActivities.map((activity, index) => (
-              <Card key={index} className="overflow-hidden hover:shadow-md transition-shadow">
-                <div className={`p-4 ${
-                  activity.category === 'Science' ? 'bg-blue-500' :
-                  activity.category === 'Mathematics' ? 'bg-purple-500' :
-                  activity.category === 'Language' ? 'bg-yellow-500' :
-                  activity.category === 'Social Studies' ? 'bg-green-500' :
-                  activity.category === 'Environmental Studies' ? 'bg-teal-500' :
-                  'bg-red-500'
-                } text-white`}>
-                  <div className="flex justify-between items-start">
-                    <h3 className="text-lg font-bold">{activity.title}</h3>
-                    {activity.offline && (
-                      <Badge className="bg-white/20 hover:bg-white/30">
-                        Offline
-                      </Badge>
-                    )}
-                  </div>
-                  <div className="text-sm opacity-90">{activity.category}</div>
-                </div>
-                
-                <CardContent className="p-4">
-                  <p className="text-gray-600 mb-4">{activity.description}</p>
-                  
-                  <div className="flex flex-wrap gap-x-4 gap-y-2 mb-4 text-sm">
-                    <div className="flex items-center gap-1">
-                      <Clock className="h-4 w-4 text-gray-500" />
-                      <span>{activity.duration}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Timer className="h-4 w-4 text-gray-500" />
-                      <span>{activity.difficulty}</span>
-                    </div>
-                  </div>
-                  
-                  <div className="mb-4">
-                    <h4 className="text-sm font-medium mb-1">Materials Needed:</h4>
-                    <div className="flex flex-wrap gap-1">
-                      {activity.materials.map((material, i) => (
-                        <Badge key={i} variant="outline" className="bg-gray-50 text-xs">
-                          {material}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                  
-                  <div className="mb-4">
-                    <h4 className="text-sm font-medium mb-1">Educational Benefits:</h4>
-                    <div className="flex flex-wrap gap-1">
-                      {activity.benefits.map((benefit, i) => (
-                        <Badge key={i} variant="outline" className="bg-blue-50 text-xs text-blue-700">
-                          {benefit}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center gap-2 mb-4 bg-purple-50 p-2 rounded">
-                    <Award className="h-4 w-4 text-purple-500" />
-                    <span className="text-sm text-purple-700">{activity.digitalRewards}</span>
-                  </div>
-                  
-                  <Button className="w-full">Start Family Activity</Button>
-                </CardContent>
-              </Card>
-            ))}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+        <div className="lg:col-span-2 space-y-6">
+          <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
+            <div>
+              <h3 className="text-2xl font-bold">Your Co-Learning Schedule</h3>
+              <p className="text-gray-600">Quick activities to boost your child's learning</p>
+            </div>
+            <div className="flex gap-2">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="gap-2"
+                onClick={handleSendReminder}
+              >
+                <Smartphone className="h-4 w-4" />
+                Send Reminder
+              </Button>
+              <Button 
+                size="sm" 
+                className="gap-2"
+                onClick={handleScheduleCustom}
+              >
+                <PlusCircle className="h-4 w-4" />
+                Create Custom
+              </Button>
+            </div>
           </div>
-        </TabsContent>
-        
-        <TabsContent value="benefits" className="mt-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <Card>
-              <CardContent className="p-6">
-                <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-                  <Star className="h-6 w-6 text-yellow-500" />
-                  Benefits for Children
-                </h3>
-                
-                <div className="space-y-4">
-                  <div className="flex items-start gap-3">
-                    <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0" />
-                    <div>
-                      <h4 className="font-bold">Deeper Learning</h4>
-                      <p className="text-gray-600">
-                        When parents participate, children retain concepts better and develop deeper understanding
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start gap-3">
-                    <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0" />
-                    <div>
-                      <h4 className="font-bold">Increased Confidence</h4>
-                      <p className="text-gray-600">
-                        Learning alongside parents in a safe space builds academic confidence
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start gap-3">
-                    <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0" />
-                    <div>
-                      <h4 className="font-bold">Cultural Connection</h4>
-                      <p className="text-gray-600">
-                        Activities integrate Indian cultural elements, strengthening identity and heritage
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start gap-3">
-                    <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0" />
-                    <div>
-                      <h4 className="font-bold">Reduced Screen Time</h4>
-                      <p className="text-gray-600">
-                        Offline activities provide educational benefits without excessive device usage
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+          
+          <Tabs defaultValue="today" onValueChange={setActiveTab}>
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="today">Today</TabsTrigger>
+              <TabsTrigger value="thisWeek">This Week</TabsTrigger>
+              <TabsTrigger value="parentTips">Parent Tips</TabsTrigger>
+            </TabsList>
             
-            <Card>
-              <CardContent className="p-6">
-                <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-                  <Users className="h-6 w-6 text-blue-500" />
-                  Benefits for Parents
-                </h3>
-                
-                <div className="space-y-4">
-                  <div className="flex items-start gap-3">
-                    <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0" />
-                    <div>
-                      <h4 className="font-bold">Insight Into Learning</h4>
-                      <p className="text-gray-600">
-                        Direct involvement gives parents visibility into what and how their child is learning
-                      </p>
+            <TabsContent value="today" className="space-y-4 pt-4">
+              {schedule.today.map(activity => (
+                <Card key={activity.id} className={activity.completed ? 'border-green-200 bg-green-50/50' : ''}>
+                  <CardContent className="p-4">
+                    <div className="flex justify-between items-start mb-2">
+                      <div className="flex gap-3 items-center">
+                        <div className={`p-2 rounded-full ${activity.completed ? 'bg-green-100 text-green-700' : 'bg-lovable-purple/10 text-lovable-purple'}`}>
+                          {activity.completed ? <CheckCircle className="h-5 w-5" /> : <Clock className="h-5 w-5" />}
+                        </div>
+                        <div>
+                          <div className="text-sm font-medium text-gray-500">{activity.time}</div>
+                          <h4 className="font-bold">{activity.title}</h4>
+                        </div>
+                      </div>
+                      <Badge>{activity.duration}</Badge>
                     </div>
-                  </div>
-                  
-                  <div className="flex items-start gap-3">
-                    <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0" />
-                    <div>
-                      <h4 className="font-bold">Quality Family Time</h4>
-                      <p className="text-gray-600">
-                        Educational activities create meaningful bonding opportunities beyond entertainment
-                      </p>
+                    
+                    <p className="text-gray-600 mb-4">{activity.description}</p>
+                    
+                    <div className="flex flex-col sm:flex-row justify-between gap-4 items-start sm:items-center">
+                      <div>
+                        <div className="text-sm font-medium mb-1">Materials Needed:</div>
+                        <div className="flex flex-wrap gap-2">
+                          {activity.materials.map((material, index) => (
+                            <Badge key={index} variant="outline" className="bg-gray-50">
+                              {material}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      {!activity.completed ? (
+                        <Button 
+                          className="sm:self-end gap-2"
+                          onClick={() => handleCompleteActivity(activity.id)}
+                        >
+                          <CheckCircle className="h-4 w-4" />
+                          Mark Complete
+                        </Button>
+                      ) : (
+                        <div className="flex items-center gap-2 bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">
+                          <Star className="h-4 w-4" />
+                          <span>Earned {activity.xp} XP</span>
+                        </div>
+                      )}
                     </div>
-                  </div>
-                  
-                  <div className="flex items-start gap-3">
-                    <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0" />
-                    <div>
-                      <h4 className="font-bold">Progress Tracking</h4>
-                      <p className="text-gray-600">
-                        Parents receive detailed insights about their child's strengths and growth areas
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start gap-3">
-                    <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0" />
-                    <div>
-                      <h4 className="font-bold">Guidance & Support</h4>
-                      <p className="text-gray-600">
-                        Activities include clear instructions so parents can confidently guide learning
-                      </p>
-                    </div>
-                  </div>
+                  </CardContent>
+                </Card>
+              ))}
+              
+              {schedule.today.every(act => act.completed) && (
+                <div className="text-center py-6 bg-green-50 rounded-lg border border-green-100">
+                  <CheckCircle className="h-12 w-12 text-green-500 mx-auto mb-2" />
+                  <h3 className="text-xl font-bold text-green-700">All Done for Today!</h3>
+                  <p className="text-green-600 mb-4">You've completed all scheduled co-learning activities for today</p>
+                  <Button 
+                    variant="outline" 
+                    className="gap-2 border-green-200 text-green-700 hover:bg-green-100"
+                    onClick={() => setActiveTab('thisWeek')}
+                  >
+                    <Calendar className="h-4 w-4" />
+                    View Upcoming Activities
+                  </Button>
                 </div>
-              </CardContent>
-            </Card>
+              )}
+            </TabsContent>
             
-            <Card className="md:col-span-2">
-              <CardContent className="p-6">
-                <div className="flex flex-col md:flex-row gap-6 items-center">
-                  <div className="md:w-1/3 text-center">
-                    <div className="relative inline-block">
-                      <SmartphoneCharging className="h-24 w-24 text-lovable-purple mx-auto" />
-                      <div className="absolute -top-2 -right-2 bg-yellow-400 text-white w-8 h-8 rounded-full flex items-center justify-center text-lg font-bold">+</div>
-                      <div className="absolute -bottom-2 -right-2 bg-green-400 text-white w-8 h-8 rounded-full flex items-center justify-center text-lg font-bold">+</div>
-                      <div className="absolute -bottom-2 -left-2 bg-blue-400 text-white w-8 h-8 rounded-full flex items-center justify-center text-lg font-bold">+</div>
-                    </div>
-                  </div>
-                  
-                  <div className="md:w-2/3">
-                    <h3 className="text-xl font-bold mb-3">Research-Backed Approach</h3>
-                    <p className="text-gray-600 mb-4">
-                      Our parent-child co-learning approach is based on extensive educational research 
-                      showing that parental involvement is one of the strongest predictors of academic success, 
-                      especially in the Indian educational context.
-                    </p>
-                    
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <div className="font-bold mb-2">Key Indian Educational Research Findings:</div>
-                      <ul className="space-y-2 text-gray-600">
-                        <li className="flex items-start gap-2">
-                          <span className="text-green-500 font-bold">•</span> 
-                          <span>83% of high-performing Indian students report regular parent involvement in studies</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="text-green-500 font-bold">•</span> 
-                          <span>ASER studies show 2x improvement in reading levels when parents regularly engage with learning</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="text-green-500 font-bold">•</span> 
-                          <span>NCERT recommends at least 30 minutes of daily parent-child co-learning for primary students</span>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
-        
-        <TabsContent value="weekend" className="mt-6">
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex flex-col md:flex-row items-center gap-8 mb-8">
-                <div className="md:w-1/3">
-                  <div className="bg-gradient-to-r from-lovable-purple to-lovable-blue text-white p-6 rounded-xl">
-                    <Calendar className="h-12 w-12 mb-4" />
-                    <h3 className="text-2xl font-bold mb-2">Weekend Family Quests</h3>
-                    <p>
-                      Special weekend activities designed for the whole family to enjoy and learn together.
-                    </p>
-                    <div className="flex items-center gap-2 mt-4">
-                      <Sparkles className="h-5 w-5" />
-                      <span className="font-bold">Double XP Rewards!</span>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="md:w-2/3">
-                  <h3 className="text-xl font-bold mb-4">How Weekend Quests Work</h3>
-                  
-                  <div className="space-y-4 mb-6">
-                    <div className="flex items-start gap-3">
-                      <div className="w-6 h-6 rounded-full bg-lovable-purple text-white flex items-center justify-center flex-shrink-0">
-                        1
+            <TabsContent value="thisWeek" className="space-y-4 pt-4">
+              {schedule.thisWeek.map(activity => (
+                <Card key={activity.id}>
+                  <CardContent className="p-4">
+                    <div className="flex justify-between items-start mb-2">
+                      <div className="flex gap-3 items-center">
+                        <div className="p-2 rounded-full bg-lovable-purple/10 text-lovable-purple">
+                          <Calendar className="h-5 w-5" />
+                        </div>
+                        <div>
+                          <div className="text-sm font-medium text-gray-500">{activity.day} • {activity.time}</div>
+                          <h4 className="font-bold">{activity.title}</h4>
+                        </div>
                       </div>
-                      <div>
-                        <h4 className="font-bold">Quest Notification</h4>
-                        <p className="text-gray-600">
-                          Every Friday, a special Weekend Family Quest is released with details sent via WhatsApp and app notification
-                        </p>
-                      </div>
+                      <Badge>{activity.duration}</Badge>
                     </div>
                     
-                    <div className="flex items-start gap-3">
-                      <div className="w-6 h-6 rounded-full bg-lovable-purple text-white flex items-center justify-center flex-shrink-0">
-                        2
-                      </div>
-                      <div>
-                        <h4 className="font-bold">Gather Materials</h4>
-                        <p className="text-gray-600">
-                          Simple household materials are all you need - each quest is designed to use common items found in Indian homes
-                        </p>
-                      </div>
-                    </div>
+                    <p className="text-gray-600 mb-4">{activity.description}</p>
                     
-                    <div className="flex items-start gap-3">
-                      <div className="w-6 h-6 rounded-full bg-lovable-purple text-white flex items-center justify-center flex-shrink-0">
-                        3
-                      </div>
+                    <div className="flex flex-col sm:flex-row justify-between gap-4 items-start sm:items-center">
                       <div>
-                        <h4 className="font-bold">Complete Together</h4>
-                        <p className="text-gray-600">
-                          Follow the step-by-step guide to complete the activity with the whole family participating
-                        </p>
+                        <div className="text-sm font-medium mb-1">Materials Needed:</div>
+                        <div className="flex flex-wrap gap-2">
+                          {activity.materials.map((material, index) => (
+                            <Badge key={index} variant="outline" className="bg-gray-50">
+                              {material}
+                            </Badge>
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                    
-                    <div className="flex items-start gap-3">
-                      <div className="w-6 h-6 rounded-full bg-lovable-purple text-white flex items-center justify-center flex-shrink-0">
-                        4
-                      </div>
-                      <div>
-                        <h4 className="font-bold">Document & Share</h4>
-                        <p className="text-gray-600">
-                          Take photos/videos of your family activity and upload them to earn Double XP and special badges
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-100">
-                    <div className="flex items-start gap-3">
-                      <Star className="h-6 w-6 text-yellow-500 flex-shrink-0" />
-                      <div>
-                        <h4 className="font-bold">Family Leaderboard</h4>
-                        <p className="text-gray-600 mb-2">
-                          Families who complete Weekend Quests earn points on the nationwide Family Leaderboard.
-                          Top families each month win special educational prizes!
-                        </p>
-                        <Button variant="outline" size="sm" className="gap-1">
-                          <Trophy className="h-4 w-4" />
-                          View Leaderboard
+                      
+                      <div className="sm:self-end flex gap-2">
+                        <Button variant="outline" className="gap-2">
+                          <Calendar className="h-4 w-4" />
+                          Reschedule
+                        </Button>
+                        
+                        <Button variant="default" className="gap-2">
+                          <BookOpen className="h-4 w-4" />
+                          View Details
                         </Button>
                       </div>
                     </div>
-                  </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </TabsContent>
+            
+            <TabsContent value="parentTips" className="space-y-4 pt-4">
+              {schedule.parentTips.map(tip => (
+                <Card key={tip.id}>
+                  <CardContent className="p-4">
+                    <div className="flex gap-3 items-start mb-3">
+                      <div className="p-2 rounded-full bg-yellow-100 text-yellow-700">
+                        <Star className="h-5 w-5" />
+                      </div>
+                      <div>
+                        <Badge className="mb-1 bg-yellow-100 text-yellow-800 hover:bg-yellow-200">
+                          {tip.category}
+                        </Badge>
+                        <h4 className="font-bold text-lg">{tip.title}</h4>
+                      </div>
+                    </div>
+                    
+                    <p className="text-gray-600 mb-4 pl-12">{tip.description}</p>
+                    
+                    <div className="flex justify-end">
+                      <Button variant="ghost" size="sm" className="gap-2 text-lovable-purple">
+                        Read More Tips
+                        <ArrowRight className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+              
+              <div className="text-center bg-yellow-50 p-6 rounded-xl border border-yellow-100">
+                <h3 className="text-lg font-bold mb-2">Parent Learning Resources</h3>
+                <p className="text-gray-600 mb-4">
+                  Access our library of guides, videos, and workshops designed to help you 
+                  become an effective co-learning partner.
+                </p>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-2 max-w-md mx-auto mb-4">
+                  <Button variant="outline" size="sm" className="gap-1">
+                    <Video className="h-3 w-3" />
+                    Videos
+                  </Button>
+                  <Button variant="outline" size="sm" className="gap-1">
+                    <FileText className="h-3 w-3" />
+                    Guides
+                  </Button>
+                  <Button variant="outline" size="sm" className="gap-1">
+                    <Calendar className="h-3 w-3" />
+                    Workshops
+                  </Button>
                 </div>
               </div>
+            </TabsContent>
+          </Tabs>
+        </div>
+        
+        <div className="space-y-6">
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-bold text-lg">Co-Learning Progress</h3>
+                <Badge className="bg-lovable-purple">Level 3</Badge>
+              </div>
               
-              <div className="border-t pt-6">
-                <h3 className="text-xl font-bold mb-4">Upcoming Weekend Quests</h3>
-                
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="border rounded-lg overflow-hidden">
-                    <div className="bg-green-500 text-white p-3">
-                      <div className="font-bold">This Weekend</div>
-                      <div className="text-sm opacity-90">Environmental Science</div>
-                    </div>
-                    <div className="p-4">
-                      <h4 className="font-bold mb-2">Rainwater Harvester</h4>
-                      <p className="text-sm text-gray-600 mb-3">
-                        Build a simple rainwater harvesting model to learn about water conservation.
-                      </p>
-                      <Badge variant="outline" className="bg-green-50 text-green-700">
-                        Available Friday
-                      </Badge>
-                    </div>
+              <div className="space-y-4">
+                <div>
+                  <div className="flex justify-between text-sm mb-1">
+                    <span>Weekly XP Goal</span>
+                    <span>125/200 XP</span>
                   </div>
-                  
-                  <div className="border rounded-lg overflow-hidden">
-                    <div className="bg-blue-500 text-white p-3">
-                      <div className="font-bold">Next Weekend</div>
-                      <div className="text-sm opacity-90">Physics</div>
-                    </div>
-                    <div className="p-4">
-                      <h4 className="font-bold mb-2">Marble Run Challenge</h4>
-                      <p className="text-sm text-gray-600 mb-3">
-                        Create the ultimate marble run to explore gravity, momentum, and energy.
-                      </p>
-                      <Badge variant="outline" className="bg-blue-50 text-blue-700">
-                        Coming Soon
-                      </Badge>
-                    </div>
-                  </div>
-                  
-                  <div className="border rounded-lg overflow-hidden">
-                    <div className="bg-purple-500 text-white p-3">
-                      <div className="font-bold">In Two Weeks</div>
-                      <div className="text-sm opacity-90">Art & Culture</div>
-                    </div>
-                    <div className="p-4">
-                      <h4 className="font-bold mb-2">Folk Art Workshop</h4>
-                      <p className="text-sm text-gray-600 mb-3">
-                        Learn and create traditional Indian folk art with simple materials.
-                      </p>
-                      <Badge variant="outline" className="bg-purple-50 text-purple-700">
-                        Coming Soon
-                      </Badge>
-                    </div>
+                  <div className="w-full bg-gray-100 rounded-full h-2">
+                    <div className="bg-lovable-purple rounded-full h-2" style={{ width: '62.5%' }}></div>
                   </div>
                 </div>
+                
+                <div>
+                  <div className="flex justify-between text-sm mb-1">
+                    <span>Activities Completed</span>
+                    <span>5 this week</span>
+                  </div>
+                  <div className="w-full bg-gray-100 rounded-full h-2">
+                    <div className="bg-green-500 rounded-full h-2" style={{ width: '70%' }}></div>
+                  </div>
+                </div>
+                
+                <div className="bg-gray-50 p-3 rounded-lg text-sm space-y-2">
+                  <div className="flex justify-between">
+                    <span>Current Streak:</span>
+                    <span className="font-bold">12 days</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Total Activities:</span>
+                    <span className="font-bold">47</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Co-Learning Time:</span>
+                    <span className="font-bold">9.5 hours</span>
+                  </div>
+                </div>
+                
+                <Button className="w-full gap-2">
+                  <Award className="h-4 w-4" />
+                  View Parent Achievements
+                </Button>
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
-      </Tabs>
+          
+          {featuredQuest && (
+            <Card className="border-2 border-purple-200">
+              <CardContent className="p-6">
+                <div className="bg-purple-100 text-purple-800 px-2 py-1 rounded text-xs font-medium inline-block mb-2">
+                  FEATURED FAMILY QUEST
+                </div>
+                
+                <h3 className="text-lg font-bold mb-2 flex items-center gap-2">
+                  {featuredQuest.icon}
+                  {featuredQuest.title}
+                </h3>
+                
+                <p className="text-gray-600 text-sm mb-4">{featuredQuest.description}</p>
+                
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {featuredQuest.subjects.map((subject, index) => (
+                    <Badge key={index} variant="outline">
+                      {subject}
+                    </Badge>
+                  ))}
+                </div>
+                
+                <div className="flex justify-between text-sm text-gray-500 mb-4">
+                  <div className="flex items-center gap-1">
+                    <Clock className="h-4 w-4" />
+                    <span>{featuredQuest.duration}</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Star className="h-4 w-4 text-yellow-500" />
+                    <span>{featuredQuest.xp} XP</span>
+                  </div>
+                </div>
+                
+                <Button className="w-full">Start Family Quest</Button>
+              </CardContent>
+            </Card>
+          )}
+          
+          <div className="bg-lovable-purple/10 p-4 rounded-xl">
+            <h3 className="font-bold text-lovable-purple mb-2">Parent Tip of the Day</h3>
+            <p className="text-gray-700 text-sm mb-3">
+              Learning happens everywhere! Find opportunities to count objects, read signs, 
+              and discuss observations during routine activities like shopping or commuting.
+            </p>
+            <Button variant="link" className="p-0 h-auto text-lovable-purple text-sm">
+              More Tips
+              <ArrowRight className="h-3 w-3 ml-1" />
+            </Button>
+          </div>
+        </div>
+      </div>
+      
+      <div className="bg-blue-50 rounded-xl p-8 border border-blue-100">
+        <div className="max-w-3xl mx-auto">
+          <h3 className="text-2xl font-bold mb-6 text-center">Benefits of Parent Co-Learning</h3>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-white p-6 rounded-lg shadow-sm">
+              <div className="flex gap-4 items-start">
+                <div className="bg-lovable-green/10 p-2 rounded-full">
+                  <Award className="h-6 w-6 text-lovable-green" />
+                </div>
+                <div>
+                  <h4 className="font-bold mb-2">For Children</h4>
+                  <ul className="space-y-2 text-gray-600 text-sm">
+                    <li className="flex gap-2">
+                      <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0 mt-0.5" />
+                      <span>Stronger concept understanding with parental guidance</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0 mt-0.5" />
+                      <span>Higher engagement through personalized attention</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0 mt-0.5" />
+                      <span>Building positive associations with learning</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0 mt-0.5" />
+                      <span>Applying concepts to real-world scenarios</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            
+            <div className="bg-white p-6 rounded-lg shadow-sm">
+              <div className="flex gap-4 items-start">
+                <div className="bg-lovable-blue/10 p-2 rounded-full">
+                  <Award className="h-6 w-6 text-lovable-blue" />
+                </div>
+                <div>
+                  <h4 className="font-bold mb-2">For Parents</h4>
+                  <ul className="space-y-2 text-gray-600 text-sm">
+                    <li className="flex gap-2">
+                      <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0 mt-0.5" />
+                      <span>Better understanding of child's curriculum</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0 mt-0.5" />
+                      <span>Stronger parent-child bonds through shared activities</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0 mt-0.5" />
+                      <span>Insight into child's learning strengths and challenges</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0 mt-0.5" />
+                      <span>Satisfaction from direct involvement in education</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
-  );
-};
-
-// Add CheckCircle component if not already defined elsewhere
-const CheckCircle = (props: React.ComponentProps<typeof Users>) => {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-      <polyline points="22 4 12 14.01 9 11.01"></polyline>
-    </svg>
   );
 };
 

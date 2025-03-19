@@ -1,398 +1,327 @@
 
 import React, { useState } from 'react';
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { 
   Printer, 
-  Download, 
   QrCode, 
-  FileText, 
-  Sparkles, 
-  BarChart3,
-  Scan,
-  BookOpen,
-  CheckCircle
+  Download, 
+  BookOpen, 
+  Calculator, 
+  Flask, 
+  Languages, 
+  FileText,
+  Map
 } from 'lucide-react';
+import PhysicalDigitalActions from './PhysicalDigitalActions';
+import { useToast } from '@/hooks/use-toast';
+
+interface Worksheet {
+  id: string;
+  title: string;
+  subject: string;
+  grade: string;
+  description: string;
+  type: 'Activity' | 'Practice' | 'Assessment';
+  pages: number;
+  digitalComponent: string;
+}
 
 const PhysicalDigitalWorksheets: React.FC = () => {
-  const [selectedClass, setSelectedClass] = useState('class3');
-  const [selectedSubject, setSelectedSubject] = useState('math');
-
-  const worksheets = [
+  const { toast } = useToast();
+  const [selectedSubject, setSelectedSubject] = useState<string>("all");
+  const [selectedGrade, setSelectedGrade] = useState<string>("all");
+  
+  // Complete worksheet data model
+  const worksheets: Worksheet[] = [
     {
-      title: "Fractions Basics",
-      subject: "math",
-      class: "class3",
-      preview: "/placeholder.svg",
+      id: 'ws1',
+      title: 'Addition with Regrouping',
+      subject: 'Mathematics',
+      grade: '2',
+      description: 'Practice adding two-digit numbers with regrouping (carrying) using concrete visual aids',
+      type: 'Practice',
       pages: 2,
-      difficulty: "Easy",
-      skills: ["Basic Fractions", "Visual Representation", "Comparison"],
-      digitalRewards: ["Fraction Explorer Game", "+50 XP", "Bronze Badge"]
+      digitalComponent: 'Interactive number line simulation after completion'
     },
     {
-      title: "Multiplication Tables 1-10",
-      subject: "math",
-      class: "class3",
-      preview: "/placeholder.svg",
-      pages: 3,
-      difficulty: "Medium",
-      skills: ["Multiplication", "Pattern Recognition", "Memory"],
-      digitalRewards: ["Times Table Challenge", "+75 XP", "Silver Badge"]
-    },
-    {
-      title: "Hindi Vowels & Matras",
-      subject: "hindi",
-      class: "class3",
-      preview: "/placeholder.svg",
+      id: 'ws2',
+      title: 'States of Matter Experiment',
+      subject: 'Science',
+      grade: '3',
+      description: 'Hands-on experiment worksheet with observation tables for studying solids, liquids and gases',
+      type: 'Activity',
       pages: 4,
-      difficulty: "Medium",
-      skills: ["Hindi Vowels", "Matras Usage", "Word Formation"],
-      digitalRewards: ["Vowel Sound Game", "+60 XP", "Language Badge"]
+      digitalComponent: 'Video explanation of molecular structure'
     },
     {
-      title: "Plants & Their Parts",
-      subject: "science",
-      class: "class3",
-      preview: "/placeholder.svg",
+      id: 'ws3',
+      title: 'Hindi Vocabulary Builder',
+      subject: 'Hindi',
+      grade: '1',
+      description: 'Cut and paste activity to match Hindi words with corresponding pictures',
+      type: 'Activity',
       pages: 2,
-      difficulty: "Easy",
-      skills: ["Plant Anatomy", "Labeling", "Functions"],
-      digitalRewards: ["Virtual Plant Growth", "+50 XP", "Nature Badge"]
+      digitalComponent: 'Audio pronunciation guide accessed via QR code'
     },
     {
-      title: "Addition & Subtraction",
-      subject: "math",
-      class: "class1",
-      preview: "/placeholder.svg",
-      pages: 2,
-      difficulty: "Easy",
-      skills: ["Basic Addition", "Basic Subtraction", "Number Sense"],
-      digitalRewards: ["Number Adventure Game", "+40 XP", "Math Badge"]
-    },
-    {
-      title: "States of India",
-      subject: "social",
-      class: "class5",
-      preview: "/placeholder.svg",
+      id: 'ws4',
+      title: 'Multiplication Tables Practice',
+      subject: 'Mathematics',
+      grade: '3',
+      description: 'Structured practice for multiplication tables from 2 to 10 with visual aids',
+      type: 'Practice',
       pages: 3,
-      difficulty: "Medium",
-      skills: ["Geography", "Map Reading", "States & Capitals"],
-      digitalRewards: ["India Explorer Game", "+70 XP", "Geography Badge"]
+      digitalComponent: 'Multiplication game unlocked after completion'
     },
+    {
+      id: 'ws5',
+      title: 'My Neighborhood Map',
+      subject: 'Environmental Studies',
+      grade: '2',
+      description: 'Draw and label important places in your neighborhood with compass directions',
+      type: 'Activity',
+      pages: 1,
+      digitalComponent: 'Interactive community mapping tool'
+    },
+    {
+      id: 'ws6',
+      title: 'English Phonics Patterns',
+      subject: 'English',
+      grade: '1',
+      description: 'Practice identifying and writing common phonics patterns with cut-out letter tiles',
+      type: 'Practice',
+      pages: 2,
+      digitalComponent: 'Audio pronunciation feedback'
+    },
+    {
+      id: 'ws7',
+      title: 'Plant Life Cycle',
+      subject: 'Science',
+      grade: '2',
+      description: 'Observe and document plant growth with seed planting activity and observation journal',
+      type: 'Activity',
+      pages: 3,
+      digitalComponent: 'Time-lapse plant growth visualization'
+    },
+    {
+      id: 'ws8',
+      title: 'Quarter Assessment - Maths',
+      subject: 'Mathematics',
+      grade: '3',
+      description: 'Comprehensive assessment covering addition, subtraction, and basic multiplication',
+      type: 'Assessment',
+      pages: 4,
+      digitalComponent: 'Immediate scoring and concept remediation'
+    },
+    {
+      id: 'ws9',
+      title: 'Hindi Letter Tracing',
+      subject: 'Hindi',
+      grade: '1',
+      description: 'Practice writing Hindi consonants and vowels with proper stroke order',
+      type: 'Practice',
+      pages: 5,
+      digitalComponent: 'Animated stroke order demonstrations'
+    }
   ];
-
-  const filteredWorksheets = worksheets.filter(
-    ws => (selectedClass === 'all' || ws.class === selectedClass) && 
-         (selectedSubject === 'all' || ws.subject === selectedSubject)
-  );
-
-  const classOptions = [
-    { value: 'all', label: 'All Classes' },
-    { value: 'class1', label: 'Class 1' },
-    { value: 'class2', label: 'Class 2' },
-    { value: 'class3', label: 'Class 3' },
-    { value: 'class4', label: 'Class 4' },
-    { value: 'class5', label: 'Class 5' },
-  ];
-
-  const subjectOptions = [
-    { value: 'all', label: 'All Subjects' },
-    { value: 'math', label: 'Mathematics' },
-    { value: 'science', label: 'Science' },
-    { value: 'hindi', label: 'Hindi' },
-    { value: 'english', label: 'English' },
-    { value: 'social', label: 'Social Studies' },
-  ];
-
+  
+  // Filter worksheets based on selected subject and grade
+  const filteredWorksheets = worksheets.filter(worksheet => {
+    const subjectMatch = selectedSubject === 'all' || worksheet.subject === selectedSubject;
+    const gradeMatch = selectedGrade === 'all' || worksheet.grade === selectedGrade;
+    return subjectMatch && gradeMatch;
+  });
+  
+  // Group worksheets by type
+  const groupedWorksheets = {
+    Activity: filteredWorksheets.filter(w => w.type === 'Activity'),
+    Practice: filteredWorksheets.filter(w => w.type === 'Practice'),
+    Assessment: filteredWorksheets.filter(w => w.type === 'Assessment')
+  };
+  
+  const subjects = ['Mathematics', 'Science', 'Hindi', 'English', 'Environmental Studies'];
+  const grades = ['1', '2', '3', '4', '5'];
+  
+  const getSubjectIcon = (subject: string) => {
+    switch(subject) {
+      case 'Mathematics':
+        return <Calculator className="h-5 w-5" />;
+      case 'Science':
+        return <Flask className="h-5 w-5" />;
+      case 'Hindi':
+      case 'English':
+        return <Languages className="h-5 w-5" />;
+      case 'Environmental Studies':
+        return <Map className="h-5 w-5" />;
+      default:
+        return <BookOpen className="h-5 w-5" />;
+    }
+  };
+  
   return (
     <section className="py-10">
-      <div className="text-center mb-10">
+      <div className="text-center mb-12">
         <div className="flex justify-center mb-4">
           <div className="relative">
-            <Printer className="h-16 w-16 text-lovable-blue" />
-            <div className="absolute -right-2 -bottom-2 bg-lovable-purple text-white p-1 rounded-full">
-              <Sparkles className="h-6 w-6" />
+            <Printer className="h-16 w-16 text-blue-500" />
+            <div className="absolute -right-2 -bottom-2 bg-green-500 text-white p-1 rounded-full">
+              <QrCode className="h-6 w-6" />
             </div>
           </div>
         </div>
-        <h2 className="text-3xl font-bold mb-4">Physical-Digital Worksheets</h2>
+        <h2 className="text-3xl font-bold mb-4">Physical-Digital Worksheet Hybrid</h2>
         <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-          Blend traditional pen-and-paper learning with digital rewards and tracking.
-          Print low-ink worksheets, complete them offline, and scan to unlock digital experiences.
+          Bridging the gap between traditional hands-on learning and digital education with
+          printable worksheets that connect to interactive digital experiences.
         </p>
       </div>
 
-      <Tabs defaultValue="browse" className="w-full mb-10">
-        <TabsList className="grid w-full max-w-md mx-auto grid-cols-2">
-          <TabsTrigger value="browse">Browse Worksheets</TabsTrigger>
-          <TabsTrigger value="how">How It Works</TabsTrigger>
+      <div className="mb-8">
+        <div className="bg-gray-50 p-4 rounded-xl">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <h3 className="text-lg font-semibold mb-3">Filter by Subject</h3>
+              <div className="flex flex-wrap gap-2">
+                <Badge 
+                  className={`cursor-pointer ${selectedSubject === 'all' ? 'bg-blue-500' : 'bg-gray-200 text-gray-800 hover:bg-gray-300'}`}
+                  onClick={() => setSelectedSubject('all')}
+                >
+                  All Subjects
+                </Badge>
+                {subjects.map(subject => (
+                  <Badge 
+                    key={subject}
+                    className={`cursor-pointer ${selectedSubject === subject ? 'bg-blue-500' : 'bg-gray-200 text-gray-800 hover:bg-gray-300'}`}
+                    onClick={() => setSelectedSubject(subject)}
+                  >
+                    {subject}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+            
+            <div>
+              <h3 className="text-lg font-semibold mb-3">Filter by Grade</h3>
+              <div className="flex flex-wrap gap-2">
+                <Badge 
+                  className={`cursor-pointer ${selectedGrade === 'all' ? 'bg-blue-500' : 'bg-gray-200 text-gray-800 hover:bg-gray-300'}`}
+                  onClick={() => setSelectedGrade('all')}
+                >
+                  All Grades
+                </Badge>
+                {grades.map(grade => (
+                  <Badge 
+                    key={grade}
+                    className={`cursor-pointer ${selectedGrade === grade ? 'bg-blue-500' : 'bg-gray-200 text-gray-800 hover:bg-gray-300'}`}
+                    onClick={() => setSelectedGrade(grade)}
+                  >
+                    Class {grade}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <Tabs defaultValue="Activity">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="Activity">Activities</TabsTrigger>
+          <TabsTrigger value="Practice">Practice Sheets</TabsTrigger>
+          <TabsTrigger value="Assessment">Assessments</TabsTrigger>
         </TabsList>
         
-        <TabsContent value="browse" className="mt-6">
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-            <div className="p-4 bg-gray-50 border-b">
-              <div className="flex flex-wrap gap-4">
-                <div className="flex-1">
-                  <label className="text-sm font-medium text-gray-700 mb-1 block">Class</label>
-                  <select 
-                    className="w-full rounded-md border border-gray-300 p-2"
-                    value={selectedClass}
-                    onChange={(e) => setSelectedClass(e.target.value)}
-                  >
-                    {classOptions.map(option => (
-                      <option key={option.value} value={option.value}>{option.label}</option>
-                    ))}
-                  </select>
-                </div>
-                <div className="flex-1">
-                  <label className="text-sm font-medium text-gray-700 mb-1 block">Subject</label>
-                  <select 
-                    className="w-full rounded-md border border-gray-300 p-2"
-                    value={selectedSubject}
-                    onChange={(e) => setSelectedSubject(e.target.value)}
-                  >
-                    {subjectOptions.map(option => (
-                      <option key={option.value} value={option.value}>{option.label}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-            </div>
-            
-            <div className="p-6">
+        {Object.entries(groupedWorksheets).map(([type, worksheets]) => (
+          <TabsContent key={type} value={type} className="mt-6">
+            {worksheets.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredWorksheets.length > 0 ? (
-                  filteredWorksheets.map((worksheet, index) => (
-                    <Card key={index} className="overflow-hidden hover:shadow-md transition-shadow">
-                      <div className="aspect-[4/5] bg-gray-100 relative">
-                        <img 
-                          src={worksheet.preview} 
-                          alt={worksheet.title} 
-                          className="w-full h-full object-cover"
-                        />
-                        <div className="absolute top-2 right-2">
-                          <Badge 
-                            className={`
-                              ${worksheet.difficulty === 'Easy' ? 'bg-green-100 text-green-800' : 
-                                worksheet.difficulty === 'Medium' ? 'bg-yellow-100 text-yellow-800' : 
-                                'bg-red-100 text-red-800'}
-                            `}
-                          >
-                            {worksheet.difficulty}
-                          </Badge>
+                {worksheets.map(worksheet => (
+                  <Card key={worksheet.id}>
+                    <CardHeader className="pb-3">
+                      <div className="flex justify-between items-start">
+                        <CardTitle className="text-lg">{worksheet.title}</CardTitle>
+                        {getSubjectIcon(worksheet.subject)}
+                      </div>
+                      <div className="flex gap-2 mt-1">
+                        <Badge variant="outline">{worksheet.subject}</Badge>
+                        <Badge variant="outline">Class {worksheet.grade}</Badge>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <p className="text-sm text-gray-600">{worksheet.description}</p>
+                      
+                      <div className="flex justify-between text-sm text-gray-500">
+                        <div className="flex items-center gap-1">
+                          <FileText className="h-4 w-4" />
+                          <span>{worksheet.pages} pages</span>
                         </div>
-                        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
-                          <h3 className="text-white font-bold">{worksheet.title}</h3>
-                          <div className="flex justify-between items-center">
-                            <span className="text-white/80 text-sm">
-                              {
-                                worksheet.class === 'class1' ? 'Class 1' :
-                                worksheet.class === 'class2' ? 'Class 2' :
-                                worksheet.class === 'class3' ? 'Class 3' :
-                                worksheet.class === 'class4' ? 'Class 4' :
-                                'Class 5'
-                              }
-                            </span>
-                            <span className="text-white/80 text-sm">
-                              {worksheet.pages} page{worksheet.pages > 1 ? 's' : ''}
-                            </span>
-                          </div>
+                        <div className="flex items-center gap-1">
+                          <QrCode className="h-4 w-4" />
+                          <span>QR-enabled</span>
                         </div>
                       </div>
-                      <CardContent className="p-4">
-                        <div className="space-y-2">
-                          <div>
-                            <h4 className="text-sm font-medium">Skills Covered:</h4>
-                            <div className="flex flex-wrap gap-1 mt-1">
-                              {worksheet.skills.map((skill, i) => (
-                                <Badge key={i} variant="outline" className="text-xs">
-                                  {skill}
-                                </Badge>
-                              ))}
-                            </div>
-                          </div>
-                          <div>
-                            <h4 className="text-sm font-medium">Digital Rewards:</h4>
-                            <div className="flex flex-wrap gap-1 mt-1">
-                              {worksheet.digitalRewards.map((reward, i) => (
-                                <Badge key={i} variant="outline" className="bg-purple-50 text-xs">
-                                  {reward}
-                                </Badge>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                      </CardContent>
-                      <CardFooter className="px-4 py-3 bg-gray-50 flex justify-between">
-                        <Button size="sm" variant="outline" className="text-xs flex gap-1">
-                          <QrCode className="h-3 w-3" />
-                          Preview
-                        </Button>
-                        <Button size="sm" className="text-xs flex gap-1">
-                          <Printer className="h-3 w-3" />
-                          Print
-                        </Button>
-                      </CardFooter>
-                    </Card>
-                  ))
-                ) : (
-                  <div className="col-span-3 py-12 text-center text-gray-500">
-                    <FileText className="h-12 w-12 mx-auto text-gray-300 mb-3" />
-                    <p>No worksheets found with the selected filters.</p>
-                    <Button 
-                      variant="link" 
-                      onClick={() => {
-                        setSelectedClass('all');
-                        setSelectedSubject('all');
-                      }}
-                    >
-                      Reset filters
-                    </Button>
-                  </div>
-                )}
+                      
+                      <div className="bg-purple-50 p-3 rounded-md">
+                        <h4 className="font-medium text-sm mb-1">Digital Component:</h4>
+                        <p className="text-xs text-gray-600">{worksheet.digitalComponent}</p>
+                      </div>
+                      
+                      <PhysicalDigitalActions 
+                        worksheetName={worksheet.title}
+                        worksheetType={worksheet.type}
+                      />
+                    </CardContent>
+                  </Card>
+                ))}
               </div>
-            </div>
-          </div>
-        </TabsContent>
-        
-        <TabsContent value="how" className="mt-6">
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden p-6">
-            <h3 className="text-2xl font-bold mb-6 text-center">How Physical-Digital Worksheets Work</h3>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="text-center">
-                <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-4">
-                  <Printer className="h-8 w-8 text-blue-600" />
-                </div>
-                <h4 className="text-lg font-bold mb-2">1. Print</h4>
-                <p className="text-gray-600">
-                  Download and print low-ink worksheets directly from our platform.
-                  Each worksheet includes a unique QR code.
+            ) : (
+              <div className="text-center py-12 bg-gray-50 rounded-lg">
+                <Printer className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+                <h3 className="text-xl font-medium text-gray-600">No Worksheets Found</h3>
+                <p className="text-gray-500 max-w-md mx-auto mt-2">
+                  No {type.toLowerCase()} worksheets match your current filters. 
+                  Try selecting different subject or grade options.
                 </p>
               </div>
-              
-              <div className="text-center">
-                <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
-                  <BookOpen className="h-8 w-8 text-green-600" />
-                </div>
-                <h4 className="text-lg font-bold mb-2">2. Complete</h4>
-                <p className="text-gray-600">
-                  Students complete the worksheet with pen or pencil,
-                  reducing screen time while maintaining engagement.
-                </p>
-              </div>
-              
-              <div className="text-center">
-                <div className="w-16 h-16 rounded-full bg-purple-100 flex items-center justify-center mx-auto mb-4">
-                  <Scan className="h-8 w-8 text-purple-600" />
-                </div>
-                <h4 className="text-lg font-bold mb-2">3. Scan & Unlock</h4>
-                <p className="text-gray-600">
-                  Scan the completed worksheet to automatically grade it,
-                  track progress, and unlock digital rewards and games.
-                </p>
-              </div>
-            </div>
-            
-            <div className="mt-12 bg-gray-50 rounded-lg p-6">
-              <h4 className="text-xl font-bold mb-4">Benefits for Indian Students & Parents</h4>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="flex items-start gap-3">
-                  <CheckCircle className="h-6 w-6 text-green-500 flex-shrink-0" />
-                  <div>
-                    <h5 className="font-bold">Reduced Screen Time</h5>
-                    <p className="text-gray-600">
-                      Limits digital device usage while maintaining educational engagement
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start gap-3">
-                  <CheckCircle className="h-6 w-6 text-green-500 flex-shrink-0" />
-                  <div>
-                    <h5 className="font-bold">Works Offline</h5>
-                    <p className="text-gray-600">
-                      Perfect for areas with limited internet connectivity or device access
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start gap-3">
-                  <CheckCircle className="h-6 w-6 text-green-500 flex-shrink-0" />
-                  <div>
-                    <h5 className="font-bold">NCERT & Board Aligned</h5>
-                    <p className="text-gray-600">
-                      Content follows CBSE, ICSE, and state board curriculum guidelines
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start gap-3">
-                  <CheckCircle className="h-6 w-6 text-green-500 flex-shrink-0" />
-                  <div>
-                    <h5 className="font-bold">Progress Tracking</h5>
-                    <p className="text-gray-600">
-                      Parents receive detailed analytics on child's performance areas
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start gap-3">
-                  <CheckCircle className="h-6 w-6 text-green-500 flex-shrink-0" />
-                  <div>
-                    <h5 className="font-bold">Low Resource Requirement</h5>
-                    <p className="text-gray-600">
-                      Low-ink designs minimize printing costs for budget-conscious families
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start gap-3">
-                  <CheckCircle className="h-6 w-6 text-green-500 flex-shrink-0" />
-                  <div>
-                    <h5 className="font-bold">Gamification Benefits</h5>
-                    <p className="text-gray-600">
-                      Combines traditional practice with motivating digital rewards
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <div className="flex justify-center mt-8">
-              <Button size="lg" className="gap-2">
-                <Download className="h-5 w-5" />
-                Try Sample Worksheet Bundle
-              </Button>
-            </div>
-          </div>
-        </TabsContent>
+            )}
+          </TabsContent>
+        ))}
       </Tabs>
+      
+      <div className="mt-12 bg-blue-50 rounded-xl p-8 border border-blue-100">
+        <div className="max-w-3xl mx-auto">
+          <h3 className="text-2xl font-bold text-center mb-6">How Physical-Digital Hybrid Works</h3>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="text-center">
+              <div className="bg-white w-16 h-16 mx-auto rounded-full flex items-center justify-center shadow-sm mb-4">
+                <Printer className="h-8 w-8 text-blue-500" />
+              </div>
+              <h4 className="font-bold mb-2">1. Print</h4>
+              <p className="text-sm">Print the worksheet from home or download it to print at a local shop</p>
+            </div>
+            
+            <div className="text-center">
+              <div className="bg-white w-16 h-16 mx-auto rounded-full flex items-center justify-center shadow-sm mb-4">
+                <FileText className="h-8 w-8 text-green-500" />
+              </div>
+              <h4 className="font-bold mb-2">2. Complete</h4>
+              <p className="text-sm">Child works on the physical worksheet using pencils, crayons or scissors</p>
+            </div>
+            
+            <div className="text-center">
+              <div className="bg-white w-16 h-16 mx-auto rounded-full flex items-center justify-center shadow-sm mb-4">
+                <QrCode className="h-8 w-8 text-purple-500" />
+              </div>
+              <h4 className="font-bold mb-2">3. Scan</h4>
+              <p className="text-sm">Scan the QR code to unlock digital rewards and track progress</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
-  );
-};
-
-// Add missing CheckCircle component if not already defined elsewhere
-const CheckCircle = (props: React.ComponentProps<typeof Printer>) => {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-      <polyline points="22 4 12 14.01 9 11.01"></polyline>
-    </svg>
   );
 };
 

@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -14,8 +14,32 @@ import {
   Smartphone,
   Gem
 } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import LiteModeSettings from './LiteModeSettings';
 
 const LiteMode: React.FC = () => {
+  const { toast } = useToast(); 
+  const [isLiteModeEnabled, setIsLiteModeEnabled] = useState(false);
+  
+  const handleToggleLiteMode = () => {
+    const newState = !isLiteModeEnabled;
+    setIsLiteModeEnabled(newState);
+    
+    toast({
+      title: newState ? "Lite Mode Activated" : "Lite Mode Deactivated",
+      description: newState 
+        ? "Your app will now use significantly less data" 
+        : "Full data mode is now active",
+    });
+  };
+  
+  const handleDownloadLessons = () => {
+    toast({
+      title: "Downloading Daily Lessons",
+      description: "Your 2MB lesson pack is being downloaded for offline use",
+    });
+  };
+  
   const liteFeatures = [
     {
       title: "2MB Daily Lesson Packs",
@@ -66,6 +90,34 @@ const LiteMode: React.FC = () => {
           Making quality education accessible everywhere in India - even with limited data plans
           or unreliable internet connections.
         </p>
+        
+        <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
+          <Button 
+            size="lg" 
+            className={`gap-2 ${isLiteModeEnabled ? 'bg-green-500 hover:bg-green-600' : ''}`}
+            onClick={handleToggleLiteMode}
+          >
+            {isLiteModeEnabled ? <CheckCircle className="h-5 w-5" /> : <WifiOff className="h-5 w-5" />}
+            {isLiteModeEnabled ? 'Lite Mode Active' : 'Enable Lite Mode'}
+          </Button>
+          
+          <Button 
+            size="lg"
+            variant="outline"
+            className="gap-2"
+            onClick={handleDownloadLessons}
+          >
+            <Download className="h-5 w-5" />
+            Download Today's Lessons
+          </Button>
+        </div>
+        
+        {isLiteModeEnabled && (
+          <div className="mt-4 inline-flex items-center gap-2 bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm">
+            <CheckCircle className="h-4 w-4" />
+            <span>Lite Mode is saving you approximately 48MB per day</span>
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
@@ -137,9 +189,12 @@ const LiteMode: React.FC = () => {
             </div>
           </div>
           
-          <Button size="lg" className="w-full bg-white text-lovable-purple hover:bg-gray-100">
-            Try Lite Mode
-          </Button>
+          <div className="space-y-4">
+            <Button size="lg" className="w-full bg-white text-lovable-purple hover:bg-gray-100" onClick={handleToggleLiteMode}>
+              {isLiteModeEnabled ? 'Disable Lite Mode' : 'Enable Lite Mode'}
+            </Button>
+            <LiteModeSettings />
+          </div>
         </div>
       </div>
       
@@ -211,27 +266,6 @@ const LiteMode: React.FC = () => {
         </div>
       </div>
     </section>
-  );
-};
-
-// Add CheckCircle component if not already defined elsewhere
-const CheckCircle = (props: React.ComponentProps<typeof Wifi>) => {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-      <polyline points="22 4 12 14.01 9 11.01"></polyline>
-    </svg>
   );
 };
 

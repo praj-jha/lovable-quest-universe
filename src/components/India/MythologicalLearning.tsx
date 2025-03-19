@@ -16,11 +16,37 @@ import {
   Music,
   Palette
 } from 'lucide-react';
+import MythologicalLearningActions from './MythologicalLearningActions';
+import { useToast } from '@/hooks/use-toast';
+
+// Define types for our data structure
+interface MythologicalQuest {
+  title: string;
+  subject: string;
+  description: string;
+  skills: string[];
+  level: string;
+  rewards: string;
+}
+
+interface MythologicalCharacter {
+  id: string;
+  name: string;
+  description: string;
+  subjects: string[];
+  power: string;
+  image: string;
+  color: string;
+  quests: MythologicalQuest[];
+  unlocked?: boolean;
+}
 
 const MythologicalLearning: React.FC = () => {
+  const { toast } = useToast();
   const [activeCharacter, setActiveCharacter] = useState('hanuman');
   
-  const mythologicalCharacters = [
+  // Our data model for mythological characters and their quests
+  const mythologicalCharacters: MythologicalCharacter[] = [
     {
       id: 'hanuman',
       name: 'Hanuman',
@@ -29,6 +55,7 @@ const MythologicalLearning: React.FC = () => {
       power: 'Strength & Problem-Solving',
       image: '/placeholder.svg',
       color: 'from-orange-500 to-red-500',
+      unlocked: true,
       quests: [
         {
           title: 'Hanuman\'s Bridge Challenge',
@@ -56,6 +83,7 @@ const MythologicalLearning: React.FC = () => {
       power: 'Knowledge & Creative Expression',
       image: '/placeholder.svg',
       color: 'from-blue-400 to-purple-500',
+      unlocked: true,
       quests: [
         {
           title: 'Saraswati\'s Poetry Workshop',
@@ -83,6 +111,7 @@ const MythologicalLearning: React.FC = () => {
       power: 'Wisdom & Obstacle Removal',
       image: '/placeholder.svg',
       color: 'from-yellow-500 to-red-400',
+      unlocked: true,
       quests: [
         {
           title: 'Ganesha\'s Puzzle Palace',
@@ -110,6 +139,7 @@ const MythologicalLearning: React.FC = () => {
       power: 'Strategy & Interpersonal Skills',
       image: '/placeholder.svg',
       color: 'from-blue-500 to-blue-700',
+      unlocked: false,
       quests: [
         {
           title: 'Krishna\'s Ethical Dilemmas',
@@ -137,6 +167,7 @@ const MythologicalLearning: React.FC = () => {
       power: 'Prosperity & Resource Planning',
       image: '/placeholder.svg',
       color: 'from-yellow-400 to-red-300',
+      unlocked: false,
       quests: [
         {
           title: 'Lakshmi\'s Money Management',
@@ -164,6 +195,7 @@ const MythologicalLearning: React.FC = () => {
       power: 'Precision & Concentration',
       image: '/placeholder.svg',
       color: 'from-green-500 to-blue-500',
+      unlocked: false,
       quests: [
         {
           title: 'Arjuna\'s Archery Angles',
@@ -216,6 +248,14 @@ const MythologicalLearning: React.FC = () => {
     }
   };
   
+  const handleUnlockCharacter = (characterId: string) => {
+    toast({
+      title: "Character Unlocked!",
+      description: `You've unlocked ${mythologicalCharacters.find(c => c.id === characterId)?.name}! New quests are now available.`,
+      variant: "default",
+    });
+  };
+  
   return (
     <section className="py-10">
       <div className="text-center mb-12">
@@ -240,11 +280,19 @@ const MythologicalLearning: React.FC = () => {
                 character.id === activeCharacter 
                   ? 'border-2 border-blue-500 shadow-md' 
                   : 'border border-gray-200'
-              }`}
-              onClick={() => setActiveCharacter(character.id)}
+              } ${!character.unlocked ? 'opacity-70' : ''}`}
+              onClick={() => character.unlocked && setActiveCharacter(character.id)}
             >
               <CardContent className="p-4 flex items-center gap-3">
-                <div className={`w-12 h-12 rounded-full bg-gradient-to-br ${character.color} flex items-center justify-center text-white`}>
+                <div className={`w-12 h-12 rounded-full bg-gradient-to-br ${character.color} flex items-center justify-center text-white ${!character.unlocked ? 'relative' : ''}`}>
+                  {!character.unlocked && (
+                    <div className="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                      </svg>
+                    </div>
+                  )}
                   {character.name.charAt(0)}
                 </div>
                 <div>
@@ -307,7 +355,14 @@ const MythologicalLearning: React.FC = () => {
                           <Trophy className="h-4 w-4" />
                           <span>{quest.rewards}</span>
                         </div>
-                        <Button size="sm">Start Quest</Button>
+                        
+                        <div className="w-40">
+                          <MythologicalLearningActions 
+                            questTitle={quest.title}
+                            characterName={selectedCharacter.name}
+                            subject={quest.subject}
+                          />
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
@@ -333,22 +388,45 @@ const MythologicalLearning: React.FC = () => {
                 <div className={`w-16 h-16 rounded-full bg-gradient-to-br ${char.color} 
                   flex items-center justify-center text-white text-xl font-bold
                   ${char.id === activeCharacter ? 'ring-4 ring-yellow-400' : ''}
+                  ${!char.unlocked ? 'opacity-50' : ''}
                 `}>
                   {char.name.charAt(0)}
                 </div>
-                {index < 3 && (
+                {char.unlocked && (
                   <div className="absolute -top-1 -right-1 bg-green-500 rounded-full w-5 h-5 
                     flex items-center justify-center text-white text-xs">
                     ✓
+                  </div>
+                )}
+                {!char.unlocked && (
+                  <div className="absolute -top-1 -right-1 bg-gray-500 rounded-full w-5 h-5 
+                    flex items-center justify-center text-white text-xs">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
                   </div>
                 )}
               </div>
             ))}
           </div>
           
-          <Button size="lg" className="bg-yellow-500 hover:bg-yellow-600">
-            Explore All Characters
-          </Button>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button 
+              size="lg" 
+              className="bg-yellow-500 hover:bg-yellow-600"
+              onClick={() => handleUnlockCharacter('krishna')}
+            >
+              Unlock New Character
+            </Button>
+            <Button 
+              size="lg" 
+              variant="outline" 
+              className="border-yellow-500 text-yellow-700 hover:bg-yellow-50"
+            >
+              View Character Map
+            </Button>
+          </div>
         </div>
       </div>
     </section>
