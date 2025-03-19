@@ -33,7 +33,8 @@ const RegionalLanguageSupport: React.FC = () => {
     { id: 'more', name: '10+ More', speakers: '100M+', coverage: '80%' },
   ];
 
-  const demoConversations = {
+  // Define the demo conversations for different languages
+  const demoConversations: Record<string, Array<{role: string, text: string}>> = {
     hindi: [
       { role: 'buddy', text: 'नमस्ते! क्या आप गणित का अभ्यास करना चाहते हैं?' },
       { role: 'user', text: 'हां, मुझे कक्षा 3 के भिन्न (fractions) समझने में मदद चाहिए।' },
