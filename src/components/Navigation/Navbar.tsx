@@ -3,11 +3,13 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -17,6 +19,11 @@ const Navbar: React.FC = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Close mobile menu when route changes
+  useEffect(() => {
+    setIsOpen(false);
+  }, [location.pathname, location.hash]);
 
   const navItems = [
     { name: 'Home', path: '/' },
@@ -45,11 +52,11 @@ const Navbar: React.FC = () => {
                 <span className="text-lg font-bold text-gradient-blue-green">LQ</span>
               </div>
             </div>
-            <span className="text-xl font-bold text-gradient-blue-green">Lovable Quest</span>
+            <span className={`text-xl font-bold text-gradient-blue-green ${isMobile ? 'hidden sm:inline' : ''}`}>Lovable Quest</span>
           </Link>
 
           {/* Desktop navigation */}
-          <nav className="hidden md:flex items-center space-x-6">
+          <nav className="hidden md:flex items-center space-x-4 lg:space-x-6">
             {navItems.map((item) => (
               <Link
                 key={item.name}
@@ -80,6 +87,7 @@ const Navbar: React.FC = () => {
           <button
             className="md:hidden p-2 rounded-md text-gray-700 hover:bg-gray-100"
             onClick={() => setIsOpen(!isOpen)}
+            aria-label="Toggle menu"
           >
             {isOpen ? <X size={24} /> : <Menu size={24} />}
           </button>

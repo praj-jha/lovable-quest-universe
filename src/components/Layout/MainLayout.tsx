@@ -1,16 +1,19 @@
 
 import React from 'react';
 import Navbar from '../Navigation/Navbar';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface MainLayoutProps {
   children: React.ReactNode;
 }
 
 const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
+  const isMobile = useIsMobile();
+  
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      <main className="flex-grow">
+      <main className={`flex-grow ${isMobile ? 'pt-20' : 'pt-28'}`}>
         {children}
       </main>
       <footer className="py-8 px-4 bg-blue-50">
@@ -25,9 +28,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             <div>
               <h4 className="text-md font-semibold mb-4">Learn</h4>
               <ul className="space-y-2">
-                <li><a href="#" className="text-sm text-gray-600 hover:text-lovable-blue transition-colors">For Students</a></li>
-                <li><a href="#" className="text-sm text-gray-600 hover:text-lovable-blue transition-colors">For Parents</a></li>
-                <li><a href="#" className="text-sm text-gray-600 hover:text-lovable-blue transition-colors">For Teachers</a></li>
+                <li><a href="#kingdom-map" className="text-sm text-gray-600 hover:text-lovable-blue transition-colors">Kingdom Map</a></li>
+                <li><a href="#for-parents" className="text-sm text-gray-600 hover:text-lovable-blue transition-colors">For Parents</a></li>
+                <li><a href="#for-educators" className="text-sm text-gray-600 hover:text-lovable-blue transition-colors">For Educators</a></li>
               </ul>
             </div>
             <div>

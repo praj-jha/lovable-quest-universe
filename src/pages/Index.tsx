@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import HeroSection from '@/components/Hero/HeroSection';
 import FeaturesSection from '@/components/Features/FeaturesSection';
 import EnhancedKingdomMap from '@/components/Kingdom/EnhancedKingdomMap';
+import ForEducatorsSection from '@/components/Educators/ForEducatorsSection';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -200,110 +201,7 @@ const Index = () => {
       </section>
       
       {/* For Educators Section */}
-      <section id="for-educators" className="py-20 px-4 bg-blue-50">
-        <div className="container mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <div className="order-2 lg:order-1">
-              <div className="relative">
-                <div className="absolute inset-0 bg-purple-100 rounded-3xl transform -rotate-2"></div>
-                <div className="relative bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
-                  <div className="p-8">
-                    <h3 className="font-bold text-xl mb-4">Teacher Dashboard Preview</h3>
-                    
-                    <div className="space-y-6">
-                      <div className="bg-purple-50 rounded-xl p-4">
-                        <h4 className="font-bold text-lg mb-2">Class Progress</h4>
-                        <div className="space-y-3">
-                          <div>
-                            <div className="flex justify-between items-center mb-1">
-                              <span className="text-sm font-medium">Math</span>
-                              <span className="text-xs text-gray-500">85%</span>
-                            </div>
-                            <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
-                              <div className="h-full bg-lovable-purple" style={{ width: '85%' }}></div>
-                            </div>
-                          </div>
-                          <div>
-                            <div className="flex justify-between items-center mb-1">
-                              <span className="text-sm font-medium">Language</span>
-                              <span className="text-xs text-gray-500">72%</span>
-                            </div>
-                            <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
-                              <div className="h-full bg-lovable-blue" style={{ width: '72%' }}></div>
-                            </div>
-                          </div>
-                          <div>
-                            <div className="flex justify-between items-center mb-1">
-                              <span className="text-sm font-medium">Science</span>
-                              <span className="text-xs text-gray-500">68%</span>
-                            </div>
-                            <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
-                              <div className="h-full bg-lovable-green" style={{ width: '68%' }}></div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div>
-                        <h4 className="font-bold text-lg mb-3">Lesson Plans</h4>
-                        <div className="space-y-3">
-                          {[
-                            { title: "Fractions Fun", subject: "Math", status: "Ready" },
-                            { title: "Story Structure", subject: "Language", status: "Draft" },
-                            { title: "Earth's Layers", subject: "Science", status: "Ready" }
-                          ].map((plan, index) => (
-                            <div key={index} className="flex items-center justify-between p-3 border border-gray-100 rounded-lg">
-                              <div>
-                                <h5 className="font-medium">{plan.title}</h5>
-                                <p className="text-xs text-gray-500">{plan.subject}</p>
-                              </div>
-                              <Badge variant={plan.status === "Ready" ? "secondary" : "outline"}>
-                                {plan.status}
-                              </Badge>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <div className="order-1 lg:order-2">
-              <Badge variant="outline" className="mb-4 border-lovable-purple text-lovable-purple">For Educators</Badge>
-              <h2 className="text-3xl md:text-4xl font-bold mb-6">
-                Powerful tools to enhance your <span className="text-gradient-pink-purple">classroom</span>
-              </h2>
-              <p className="text-lg text-gray-600 mb-8">
-                Integrate our platform with your curriculum to boost engagement and provide personalized learning experiences for every student.
-              </p>
-              
-              <div className="space-y-4">
-                {[
-                  { icon: <Video size={20} />, title: "Ready-to-Use Lessons", description: "Access hundreds of standards-aligned interactive lessons across all subjects." },
-                  { icon: <Users size={20} />, title: "Student Insights", description: "Get detailed analytics on each student's progress, strengths, and areas for improvement." },
-                  { icon: <Shield size={20} />, title: "School Partnership", description: "Special programs for schools with custom content and premium features." }
-                ].map((item, index) => (
-                  <div key={index} className="flex items-start space-x-4">
-                    <div className="flex-shrink-0 w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center text-lovable-purple">
-                      {item.icon}
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-lg mb-1">{item.title}</h3>
-                      <p className="text-gray-600">{item.description}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              
-              <Button className="mt-8 rounded-full" variant="outline" size="lg">
-                Discover Educator Tools
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
+      <ForEducatorsSection />
       
       {/* Pricing & CTA Section */}
       <section className="py-20 px-4 bg-white">
