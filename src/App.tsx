@@ -13,6 +13,8 @@ import NotFound from "./pages/NotFound";
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const FamilyMode = lazy(() => import("./pages/FamilyMode"));
 const ParentAnalytics = lazy(() => import("./pages/ParentAnalytics"));
+const ForEducators = lazy(() => import("./pages/ForEducators"));
+const IndianSpecificFeatures = lazy(() => import("./pages/IndianSpecificFeatures"));
 
 const queryClient = new QueryClient();
 
@@ -37,6 +39,16 @@ const App = () => (
           <Route path="/parent-analytics" element={
             <Suspense fallback={<div className="w-full h-screen flex items-center justify-center">Loading...</div>}>
               <MainLayout><ParentAnalytics /></MainLayout>
+            </Suspense>
+          } />
+          <Route path="/for-educators" element={
+            <Suspense fallback={<div className="w-full h-screen flex items-center justify-center">Loading...</div>}>
+              <MainLayout><ForEducators /></MainLayout>
+            </Suspense>
+          } />
+          <Route path="/indian-features" element={
+            <Suspense fallback={<div className="w-full h-screen flex items-center justify-center">Loading...</div>}>
+              <MainLayout><IndianSpecificFeatures /></MainLayout>
             </Suspense>
           } />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
