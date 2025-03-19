@@ -1,9 +1,10 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, BookMarked, FileText, Zap, Users, BookOpenCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { NavigationMenu, NavigationMenuList, NavigationMenuItem, NavigationMenuTrigger, NavigationMenuContent, NavigationMenuLink } from '@/components/ui/navigation-menu';
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -31,6 +32,14 @@ const Navbar: React.FC = () => {
     { name: 'For Parents', path: '/#for-parents' },
     { name: 'For Educators', path: '/#for-educators' },
     { name: 'Dashboard', path: '/dashboard' },
+  ];
+
+  const learningFeatures = [
+    { name: 'Board Quests', path: '/dashboard?tab=curriculum', icon: <BookOpenCheck className="mr-2 h-4 w-4 text-lovable-blue" /> },
+    { name: 'Mythology Quests', path: '/indian-features?feature=mythological', icon: <BookMarked className="mr-2 h-4 w-4 text-lovable-purple" /> },
+    { name: 'Worksheets', path: '/indian-features?feature=physical-digital', icon: <FileText className="mr-2 h-4 w-4 text-green-600" /> },
+    { name: 'Lite Mode', path: '/indian-features?feature=lite-mode', icon: <Zap className="mr-2 h-4 w-4 text-yellow-600" /> },
+    { name: 'Learn with Parents', path: '/indian-features?feature=parent-co-learning', icon: <Users className="mr-2 h-4 w-4 text-red-600" /> },
   ];
 
   return (
@@ -71,6 +80,36 @@ const Navbar: React.FC = () => {
                 {item.name}
               </Link>
             ))}
+            
+            {/* Learning Features Dropdown */}
+            <NavigationMenu>
+              <NavigationMenuList>
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger className="bg-transparent focus:bg-blue-50 data-[state=open]:bg-blue-50 px-2 py-1 text-sm font-medium">
+                    Learning Features
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+                      {learningFeatures.map((feature) => (
+                        <li key={feature.name} className="row-span-1">
+                          <NavigationMenuLink asChild>
+                            <Link
+                              to={feature.path}
+                              className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-blue-50 focus:bg-blue-50"
+                            >
+                              <div className="flex items-center">
+                                {feature.icon}
+                                <div className="text-sm font-medium">{feature.name}</div>
+                              </div>
+                            </Link>
+                          </NavigationMenuLink>
+                        </li>
+                      ))}
+                    </ul>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+              </NavigationMenuList>
+            </NavigationMenu>
           </nav>
 
           {/* Login/Register buttons */}
@@ -113,6 +152,22 @@ const Navbar: React.FC = () => {
                 {item.name}
               </Link>
             ))}
+            
+            <div className="border-t border-gray-200 pt-2 mt-2">
+              <p className="px-4 py-2 text-sm font-semibold text-gray-500">Learning Features</p>
+              {learningFeatures.map((feature) => (
+                <Link
+                  key={feature.name}
+                  to={feature.path}
+                  className="flex items-center px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-100"
+                  onClick={() => setIsOpen(false)}
+                >
+                  {feature.icon}
+                  <span>{feature.name}</span>
+                </Link>
+              ))}
+            </div>
+            
             <div className="pt-4 mt-6 border-t border-gray-200 flex flex-col space-y-3">
               <button className="px-4 py-2 text-sm font-medium w-full text-center text-lovable-blue hover:bg-gray-100 rounded-lg transition-colors">
                 Login

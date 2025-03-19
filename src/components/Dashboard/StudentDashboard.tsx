@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import BuddyBot from '@/components/Buddy/BuddyBot';
+import { Link } from 'react-router-dom';
 import { 
   BookOpen, 
   Calendar, 
@@ -13,7 +14,11 @@ import {
   ArrowRight, 
   BarChart,
   MessageCircle,
-  Camera
+  Camera,
+  BookMarked,
+  FileText,
+  Zap,
+  Users
 } from 'lucide-react';
 
 interface LessonProps {
@@ -103,6 +108,37 @@ const StudentDashboard: React.FC = () => {
       title: 'Story Time with Ms. Sarah',
       time: 'Tomorrow, 5:30 PM',
       icon: <BookOpen className="text-lovable-green" />,
+    },
+  ];
+  
+  const featuredFeatures = [
+    { 
+      title: 'Mythology Quests', 
+      description: 'Learn with characters from Indian mythology',
+      icon: <BookMarked size={24} className="text-lovable-purple" />,
+      path: '/indian-features?feature=mythological',
+      color: 'bg-purple-100'
+    },
+    { 
+      title: 'Digital Worksheets', 
+      description: 'Print, solve, and scan for rewards',
+      icon: <FileText size={24} className="text-green-600" />,
+      path: '/indian-features?feature=physical-digital',
+      color: 'bg-green-100'
+    },
+    { 
+      title: 'Lite Mode', 
+      description: 'Low-data learning for slow connections',
+      icon: <Zap size={24} className="text-yellow-600" />,
+      path: '/indian-features?feature=lite-mode',
+      color: 'bg-yellow-100'
+    },
+    { 
+      title: 'Learn with Parents', 
+      description: 'Fun activities to do together at home',
+      icon: <Users size={24} className="text-red-600" />,
+      path: '/indian-features?feature=parent-co-learning',
+      color: 'bg-red-100'
     },
   ];
   
@@ -224,6 +260,36 @@ const StudentDashboard: React.FC = () => {
                           </Button>
                         </CardContent>
                       </Card>
+                    ))}
+                  </div>
+                </div>
+                
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-xl font-bold">Special Learning Features</h2>
+                    <Link to="/indian-features">
+                      <Button variant="ghost" size="sm" className="gap-2">
+                        Explore All
+                        <ArrowRight size={16} />
+                      </Button>
+                    </Link>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+                    {featuredFeatures.map((feature, index) => (
+                      <Link to={feature.path} key={index}>
+                        <Card className="h-full cursor-pointer transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+                          <CardContent className="p-4 flex items-start space-x-4">
+                            <div className={`w-12 h-12 rounded-full ${feature.color} flex items-center justify-center flex-shrink-0`}>
+                              {feature.icon}
+                            </div>
+                            <div>
+                              <h3 className="font-bold mb-1">{feature.title}</h3>
+                              <p className="text-sm text-gray-600">{feature.description}</p>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </Link>
                     ))}
                   </div>
                 </div>
