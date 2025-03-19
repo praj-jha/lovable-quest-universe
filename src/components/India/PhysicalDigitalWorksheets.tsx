@@ -9,7 +9,7 @@ import {
   Download, 
   BookOpen, 
   Calculator, 
-  Flask, 
+  Beaker, 
   Languages, 
   FileText,
   Map
@@ -149,7 +149,7 @@ const PhysicalDigitalWorksheets: React.FC = () => {
       case 'Mathematics':
         return <Calculator className="h-5 w-5" />;
       case 'Science':
-        return <Flask className="h-5 w-5" />;
+        return <Beaker className="h-5 w-5" />;
       case 'Hindi':
       case 'English':
         return <Languages className="h-5 w-5" />;

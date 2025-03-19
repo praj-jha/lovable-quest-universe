@@ -10,7 +10,7 @@ export type FamilyQuestProps = {
   subjects: string[];
   duration: string;
   members: string;
-  difficulty: string;
+  difficulty: 'Easy' | 'Medium' | 'Hard';
   xp: number;
   progress: number;
   icon: React.ReactNode;
