@@ -52,9 +52,9 @@ const RegionalLanguageSupport: React.FC = () => {
     english: [
       { role: 'buddy', text: 'Hello! Would you like to practice math?' },
       { role: 'user', text: 'Yes, I need help understanding fractions for Class 3.' },
-      { role: 'buddy', text: 'Absolutely! A fraction is a part of a number. For example, if a pizza is cut into 8 pieces and you eat 3 pieces, you've eaten 3/8 of the pizza.' },
+      { role: 'buddy', text: 'Absolutely! A fraction is a part of a number. For example, if a pizza is cut into 8 pieces and you eat 3 pieces, you\'ve eaten 3/8 of the pizza.' },
       { role: 'user', text: 'Okay, and if I eat half a pizza?' },
-      { role: 'buddy', text: 'If you eat half a pizza, you're eating 4/8 or simplified to 1/2 of the pizza! Would you like to solve some practice questions?' }
+      { role: 'buddy', text: 'If you eat half a pizza, you\'re eating 4/8 or simplified to 1/2 of the pizza! Would you like to solve some practice questions?' }
     ]
   };
 
