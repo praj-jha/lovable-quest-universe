@@ -25,30 +25,42 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<MainLayout><Index /></MainLayout>} />
+          <Route path="/" element={<MainLayout />}>
+            <Route index element={<Index />} />
+          </Route>
           <Route path="/dashboard" element={
             <Suspense fallback={<div className="w-full h-screen flex items-center justify-center">Loading...</div>}>
-              <MainLayout><Dashboard /></MainLayout>
+              <MainLayout>
+                <Dashboard />
+              </MainLayout>
             </Suspense>
           } />
           <Route path="/family" element={
             <Suspense fallback={<div className="w-full h-screen flex items-center justify-center">Loading...</div>}>
-              <MainLayout><FamilyMode /></MainLayout>
+              <MainLayout>
+                <FamilyMode />
+              </MainLayout>
             </Suspense>
           } />
           <Route path="/parent-analytics" element={
             <Suspense fallback={<div className="w-full h-screen flex items-center justify-center">Loading...</div>}>
-              <MainLayout><ParentAnalytics /></MainLayout>
+              <MainLayout>
+                <ParentAnalytics />
+              </MainLayout>
             </Suspense>
           } />
           <Route path="/for-educators" element={
             <Suspense fallback={<div className="w-full h-screen flex items-center justify-center">Loading...</div>}>
-              <MainLayout><ForEducators /></MainLayout>
+              <MainLayout>
+                <ForEducators />
+              </MainLayout>
             </Suspense>
           } />
           <Route path="/indian-features" element={
             <Suspense fallback={<div className="w-full h-screen flex items-center justify-center">Loading...</div>}>
-              <MainLayout><IndianSpecificFeatures /></MainLayout>
+              <MainLayout>
+                <IndianSpecificFeatures />
+              </MainLayout>
             </Suspense>
           } />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
