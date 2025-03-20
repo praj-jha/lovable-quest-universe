@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -7,7 +6,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { useToast } from '@/components/ui/use-toast';
 import { Loader2, BookOpen, Calculator, Atom, Globe, Music, PenTool } from 'lucide-react';
 import { useForm } from 'react-hook-form';
-import axios from 'axios';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface AvatarOption {
   id: string;
@@ -36,16 +35,7 @@ const OnboardingForm: React.FC = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const form = useForm();
-
-  // Example avatar options
-  const avatarOptions: AvatarOption[] = [
-    { id: 'avatar1', src: '/avatars/fox.svg', name: 'Fox' },
-    { id: 'avatar2', src: '/avatars/bear.svg', name: 'Bear' },
-    { id: 'avatar3', src: '/avatars/penguin.svg', name: 'Penguin' },
-    { id: 'avatar4', src: '/avatars/rabbit.svg', name: 'Rabbit' },
-    { id: 'avatar5', src: '/avatars/lion.svg', name: 'Lion' },
-    { id: 'avatar6', src: '/avatars/tiger.svg', name: 'Tiger' },
-  ];
+  const { updateProfile } = useAuth();
 
   // For simplicity, we're using placeholder image URLs
   // In a real implementation, you would use actual avatar images
@@ -126,37 +116,20 @@ const OnboardingForm: React.FC = () => {
   const completeOnboarding = async () => {
     setIsLoading(true);
     
-    // Get user from localStorage
-    const user = localStorage.getItem('user');
-    if (!user) {
-      navigate('/login');
-      return;
-    }
-    
-    const userData = JSON.parse(user);
-    
     try {
-      // Connect to the backend API to update user preferences
-      const response = await axios.put(
-        `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/users/profile`,
-        {
-          avatar: selectedAvatar,
-          preferences: {
-            grade: selectedGrade,
-            subjects: selectedSubjects
-          }
-        },
-        {
-          headers: {
-            'x-auth-token': localStorage.getItem('token')
-          }
-        }
-      );
+      // Find the selected avatar object
+      const avatar = placeholderAvatars.find(a => a.id === selectedAvatar)?.src || '';
       
-      if (response.data.success) {
-        // Update user in localStorage
-        localStorage.setItem('user', JSON.stringify(response.data.data));
-        
+      // Update user profile using the AuthContext
+      const success = await updateProfile({
+        avatar,
+        preferences: {
+          grade: selectedGrade,
+          subjects: selectedSubjects
+        }
+      });
+      
+      if (success) {
         toast({
           title: "Setup complete!",
           description: "Your learning adventure is about to begin!",
@@ -165,11 +138,13 @@ const OnboardingForm: React.FC = () => {
         
         // Redirect to dashboard
         navigate('/dashboard');
+      } else {
+        throw new Error("Failed to complete setup");
       }
     } catch (error: any) {
       toast({
         title: "Setup failed",
-        description: error.response?.data?.message || "There was a problem setting up your profile",
+        description: error.message || "There was a problem setting up your profile",
         variant: "destructive"
       });
     } finally {

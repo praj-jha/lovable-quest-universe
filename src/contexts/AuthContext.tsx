@@ -55,6 +55,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             delete axios.defaults.headers.common['x-auth-token'];
           }
         } catch (error) {
+          console.error('Auth validation error:', error);
           // Token validation failed
           localStorage.removeItem('token');
           localStorage.removeItem('user');
@@ -85,6 +86,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       }
       return false;
     } catch (error: any) {
+      console.error('Login error:', error.response?.data || error.message);
       toast({
         title: "Login failed",
         description: error.response?.data?.message || "Invalid credentials",
@@ -112,6 +114,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       }
       return false;
     } catch (error: any) {
+      console.error('Registration error:', error.response?.data || error.message);
       toast({
         title: "Registration failed",
         description: error.response?.data?.message || "Could not create account",
@@ -141,6 +144,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       }
       return false;
     } catch (error: any) {
+      console.error('Profile update error:', error.response?.data || error.message);
       toast({
         title: "Profile update failed",
         description: error.response?.data?.message || "Could not update profile",

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -10,8 +9,7 @@ import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import axios from 'axios';
+import { useAuth } from '@/contexts/AuthContext';
 
 const formSchema = z.object({
   username: z.string().min(3, { message: "Username must be at least 3 characters" }),
@@ -21,7 +19,7 @@ const formSchema = z.object({
   age: z.string().refine(value => !isNaN(Number(value)) && Number(value) > 0, {
     message: "Please enter a valid age",
   }),
-  parentEmail: z.string().email({ message: "Please enter a valid parent email" }).optional(),
+  parentEmail: z.string().email({ message: "Please enter a valid parent email" }).optional().or(z.literal('')),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords do not match",
   path: ["confirmPassword"],
@@ -33,6 +31,7 @@ const RegisterForm: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { register: registerUser } = useAuth();
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -50,20 +49,17 @@ const RegisterForm: React.FC = () => {
     setIsLoading(true);
     
     try {
-      // Connect to backend API for registration
-      const response = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/users/register`, {
+      const userData = {
         username: data.username,
         email: data.email,
         password: data.password,
         age: Number(data.age),
-        parentEmail: data.parentEmail
-      });
+        parentEmail: data.parentEmail || undefined  // Only include if not empty
+      };
       
-      if (response.data.success) {
-        // Save token to localStorage
-        localStorage.setItem('token', response.data.token);
-        localStorage.setItem('user', JSON.stringify(response.data.user));
-        
+      const success = await registerUser(userData);
+      
+      if (success) {
         toast({
           title: "Registration successful!",
           description: "Welcome to Lovable Quest! Let's start your adventure!",
@@ -72,11 +68,13 @@ const RegisterForm: React.FC = () => {
         
         // Redirect to onboarding
         navigate('/onboarding');
+      } else {
+        throw new Error("Registration failed");
       }
     } catch (error: any) {
       toast({
         title: "Registration failed",
-        description: error.response?.data?.message || "Please check your information and try again",
+        description: error.message || "Please check your information and try again",
         variant: "destructive"
       });
     } finally {

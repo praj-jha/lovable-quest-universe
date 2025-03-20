@@ -1,12 +1,14 @@
 
 const express = require('express');
 const cors = require('cors');
-const path = require('path');
 const dotenv = require('dotenv');
-const mongoose = require('mongoose');
+const connectDB = require('./config/db');
 
 // Load environment variables
 dotenv.config();
+
+// Connect to MongoDB
+connectDB();
 
 // Initialize Express app
 const app = express();
@@ -31,11 +33,6 @@ app.use((err, req, res, next) => {
     error: process.env.NODE_ENV === 'development' ? err.message : undefined
   });
 });
-
-// Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI)
-  .then(() => console.log('MongoDB Connected'))
-  .catch((err) => console.log('MongoDB Connection Error:', err));
 
 // Start server
 const PORT = process.env.PORT || 5000;

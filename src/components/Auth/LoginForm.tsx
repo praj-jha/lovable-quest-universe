@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -10,7 +9,7 @@ import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
-import axios from 'axios';
+import { useAuth } from '@/contexts/AuthContext';
 
 const formSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address" }),
@@ -23,6 +22,7 @@ const LoginForm: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -35,14 +35,9 @@ const LoginForm: React.FC = () => {
   const onSubmit = async (data: FormData) => {
     setIsLoading(true);
     try {
-      // Connect to backend API for authentication
-      const response = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/users/login`, data);
+      const success = await login(data.email, data.password);
       
-      if (response.data.success) {
-        // Save token to localStorage
-        localStorage.setItem('token', response.data.token);
-        localStorage.setItem('user', JSON.stringify(response.data.user));
-        
+      if (success) {
         toast({
           title: "Login successful!",
           description: "Welcome back to Lovable Quest!",
@@ -51,11 +46,13 @@ const LoginForm: React.FC = () => {
         
         // Redirect to dashboard
         navigate('/dashboard');
+      } else {
+        throw new Error("Login failed");
       }
     } catch (error: any) {
       toast({
         title: "Login failed",
-        description: error.response?.data?.message || "Please check your credentials and try again",
+        description: error.message || "Please check your credentials and try again",
         variant: "destructive"
       });
     } finally {
