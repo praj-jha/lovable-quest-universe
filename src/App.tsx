@@ -18,6 +18,10 @@ const IndianSpecificFeatures = lazy(() => import("./pages/IndianSpecificFeatures
 
 const queryClient = new QueryClient();
 
+const LoadingFallback = () => (
+  <div className="w-full h-screen flex items-center justify-center">Loading...</div>
+);
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -27,42 +31,32 @@ const App = () => (
         <Routes>
           <Route path="/" element={<MainLayout />}>
             <Route index element={<Index />} />
-          </Route>
-          <Route path="/dashboard" element={
-            <Suspense fallback={<div className="w-full h-screen flex items-center justify-center">Loading...</div>}>
-              <MainLayout>
+            <Route path="/dashboard" element={
+              <Suspense fallback={<LoadingFallback />}>
                 <Dashboard />
-              </MainLayout>
-            </Suspense>
-          } />
-          <Route path="/family" element={
-            <Suspense fallback={<div className="w-full h-screen flex items-center justify-center">Loading...</div>}>
-              <MainLayout>
+              </Suspense>
+            } />
+            <Route path="/family" element={
+              <Suspense fallback={<LoadingFallback />}>
                 <FamilyMode />
-              </MainLayout>
-            </Suspense>
-          } />
-          <Route path="/parent-analytics" element={
-            <Suspense fallback={<div className="w-full h-screen flex items-center justify-center">Loading...</div>}>
-              <MainLayout>
+              </Suspense>
+            } />
+            <Route path="/parent-analytics" element={
+              <Suspense fallback={<LoadingFallback />}>
                 <ParentAnalytics />
-              </MainLayout>
-            </Suspense>
-          } />
-          <Route path="/for-educators" element={
-            <Suspense fallback={<div className="w-full h-screen flex items-center justify-center">Loading...</div>}>
-              <MainLayout>
+              </Suspense>
+            } />
+            <Route path="/for-educators" element={
+              <Suspense fallback={<LoadingFallback />}>
                 <ForEducators />
-              </MainLayout>
-            </Suspense>
-          } />
-          <Route path="/indian-features" element={
-            <Suspense fallback={<div className="w-full h-screen flex items-center justify-center">Loading...</div>}>
-              <MainLayout>
+              </Suspense>
+            } />
+            <Route path="/indian-features" element={
+              <Suspense fallback={<LoadingFallback />}>
                 <IndianSpecificFeatures />
-              </MainLayout>
-            </Suspense>
-          } />
+              </Suspense>
+            } />
+          </Route>
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
