@@ -67,7 +67,7 @@ const RegisterForm: React.FC = () => {
         toast({
           title: "Registration successful!",
           description: "Welcome to Lovable Quest! Let's start your adventure!",
-          variant: "success"
+          variant: "default"
         });
         
         // Redirect to onboarding

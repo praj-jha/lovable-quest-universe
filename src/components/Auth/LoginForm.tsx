@@ -46,7 +46,7 @@ const LoginForm: React.FC = () => {
         toast({
           title: "Login successful!",
           description: "Welcome back to Lovable Quest!",
-          variant: "success"
+          variant: "default"
         });
         
         // Redirect to dashboard

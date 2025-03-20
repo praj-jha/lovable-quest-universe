@@ -160,7 +160,7 @@ const OnboardingForm: React.FC = () => {
         toast({
           title: "Setup complete!",
           description: "Your learning adventure is about to begin!",
-          variant: "success"
+          variant: "default"
         });
         
         // Redirect to dashboard
