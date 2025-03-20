@@ -1,15 +1,24 @@
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import HeroSection from '@/components/Hero/HeroSection';
 import FeaturesSection from '@/components/Features/FeaturesSection';
 import ForEducatorsSection from '@/components/Educators/ForEducatorsSection';
 import InteractiveKingdomMap from '@/components/Kingdom/InteractiveKingdomMap';
+import { Button } from '@/components/ui/button';
+import { useAuth } from '@/contexts/AuthContext';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Star, Trophy, Users } from 'lucide-react';
 
 const Index = () => {
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
+  
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-blue-50">
       <div id="hero">
-        <HeroSection />
+        <HeroSection isAuthenticated={isAuthenticated} />
       </div>
       
       <div className="container px-4 mx-auto py-16">
@@ -19,8 +28,23 @@ const Index = () => {
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
               Dive into an exciting world of knowledge where each zone offers unique learning adventures tailored to different subjects and skills.
             </p>
+            {isAuthenticated ? (
+              <Button 
+                onClick={() => navigate('/dashboard?tab=map')}
+                className="mt-6 bg-gradient-to-r from-lovable-purple to-lovable-blue text-white px-6 py-3 rounded-full font-medium hover:opacity-90 shadow-lg"
+              >
+                Continue My Adventure
+              </Button>
+            ) : (
+              <Button 
+                onClick={() => navigate('/register')}
+                className="mt-6 bg-gradient-to-r from-lovable-purple to-lovable-blue text-white px-6 py-3 rounded-full font-medium hover:opacity-90 shadow-lg"
+              >
+                Start Your Adventure
+              </Button>
+            )}
           </div>
-          <InteractiveKingdomMap />
+          <InteractiveKingdomMap demoMode={true} />
         </div>
       </div>
       
@@ -73,10 +97,116 @@ const Index = () => {
             </div>
           </div>
           
-          <div className="text-center mt-12">
-            <a href="/family" className="inline-block bg-lovable-blue text-white px-6 py-3 rounded-full font-medium hover:bg-lovable-purple transition-colors">
-              Explore Family Features
-            </a>
+          <div className="mt-12 flex flex-col items-center">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10 w-full max-w-4xl">
+              <Card className="col-span-full md:col-span-1 shadow-lg border-2 border-blue-100">
+                <CardContent className="p-6">
+                  <div className="flex justify-between items-center mb-4">
+                    <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                      Basic
+                    </Badge>
+                    <p className="text-2xl font-bold">Free</p>
+                  </div>
+                  <h3 className="text-xl font-bold mb-4">Start Learning</h3>
+                  <ul className="space-y-3 mb-6">
+                    <li className="flex items-start">
+                      <Star className="h-5 w-5 text-lovable-green mr-2 flex-shrink-0 mt-0.5" />
+                      <span>Access to core learning modules</span>
+                    </li>
+                    <li className="flex items-start">
+                      <Star className="h-5 w-5 text-lovable-green mr-2 flex-shrink-0 mt-0.5" />
+                      <span>Interactive kingdom map</span>
+                    </li>
+                    <li className="flex items-start">
+                      <Star className="h-5 w-5 text-lovable-green mr-2 flex-shrink-0 mt-0.5" />
+                      <span>Limited progress tracking</span>
+                    </li>
+                  </ul>
+                  <Button 
+                    className="w-full bg-gradient-to-r from-blue-500 to-blue-600"
+                    onClick={() => navigate('/register')}
+                  >
+                    Get Started
+                  </Button>
+                </CardContent>
+              </Card>
+
+              <Card className="col-span-full md:col-span-1 shadow-lg border-2 border-purple-100 relative">
+                <div className="absolute top-0 right-0 -translate-y-1/2 bg-purple-600 text-white px-4 py-1 rounded-full text-sm font-bold">
+                  Popular
+                </div>
+                <CardContent className="p-6">
+                  <div className="flex justify-between items-center mb-4">
+                    <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200">
+                      Family
+                    </Badge>
+                    <p className="text-2xl font-bold">$9.99<span className="text-sm font-normal text-gray-500">/mo</span></p>
+                  </div>
+                  <h3 className="text-xl font-bold mb-4">Family Learning</h3>
+                  <ul className="space-y-3 mb-6">
+                    <li className="flex items-start">
+                      <Users className="h-5 w-5 text-lovable-purple mr-2 flex-shrink-0 mt-0.5" />
+                      <span>Up to 3 child profiles</span>
+                    </li>
+                    <li className="flex items-start">
+                      <Users className="h-5 w-5 text-lovable-purple mr-2 flex-shrink-0 mt-0.5" />
+                      <span>Family co-learning activities</span>
+                    </li>
+                    <li className="flex items-start">
+                      <Users className="h-5 w-5 text-lovable-purple mr-2 flex-shrink-0 mt-0.5" />
+                      <span>Advanced progress analytics</span>
+                    </li>
+                  </ul>
+                  <Button 
+                    className="w-full bg-gradient-to-r from-purple-500 to-purple-600"
+                    onClick={() => navigate('/register')}
+                  >
+                    Start Family Plan
+                  </Button>
+                </CardContent>
+              </Card>
+
+              <Card className="col-span-full md:col-span-1 shadow-lg border-2 border-green-100">
+                <CardContent className="p-6">
+                  <div className="flex justify-between items-center mb-4">
+                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                      School
+                    </Badge>
+                    <p className="text-2xl font-bold">Custom</p>
+                  </div>
+                  <h3 className="text-xl font-bold mb-4">For Educators</h3>
+                  <ul className="space-y-3 mb-6">
+                    <li className="flex items-start">
+                      <Trophy className="h-5 w-5 text-lovable-green mr-2 flex-shrink-0 mt-0.5" />
+                      <span>Classroom management tools</span>
+                    </li>
+                    <li className="flex items-start">
+                      <Trophy className="h-5 w-5 text-lovable-green mr-2 flex-shrink-0 mt-0.5" />
+                      <span>Curriculum alignment</span>
+                    </li>
+                    <li className="flex items-start">
+                      <Trophy className="h-5 w-5 text-lovable-green mr-2 flex-shrink-0 mt-0.5" />
+                      <span>Custom learning paths</span>
+                    </li>
+                  </ul>
+                  <Button 
+                    className="w-full bg-gradient-to-r from-green-500 to-green-600"
+                    onClick={() => navigate('/for-educators')}
+                  >
+                    Contact Sales
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+            
+            <Button 
+              variant="outline" 
+              size="lg" 
+              className="rounded-full px-8"
+              onClick={() => navigate('/register')}
+            >
+              Explore All Features
+            </Button>
           </div>
         </div>
       </div>
@@ -92,8 +222,8 @@ const Index = () => {
             <div>
               <h4 className="font-bold mb-4">Features</h4>
               <ul className="space-y-2">
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Kingdom Map</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Learning Zones</a></li>
+                <li><a href="#kingdom-map" className="text-gray-400 hover:text-white transition-colors">Kingdom Map</a></li>
+                <li><a href="#features" className="text-gray-400 hover:text-white transition-colors">Learning Zones</a></li>
                 <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Progress Tracking</a></li>
                 <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Rewards System</a></li>
               </ul>
@@ -102,8 +232,8 @@ const Index = () => {
             <div>
               <h4 className="font-bold mb-4">Resources</h4>
               <ul className="space-y-2">
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">For Parents</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">For Educators</a></li>
+                <li><a href="#for-parents" className="text-gray-400 hover:text-white transition-colors">For Parents</a></li>
+                <li><a href="#for-educators" className="text-gray-400 hover:text-white transition-colors">For Educators</a></li>
                 <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Blog</a></li>
                 <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Support</a></li>
               </ul>
