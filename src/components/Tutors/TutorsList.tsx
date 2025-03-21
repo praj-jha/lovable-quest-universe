@@ -7,7 +7,7 @@ import TutorCard from './TutorCard';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 
-interface Tutor {
+export interface Tutor {
   id: string;
   name: string;
   profileImage: string;
@@ -22,6 +22,11 @@ interface Tutor {
   availability: string[];
 }
 
+interface TutorSearchResponse {
+  tutors: Tutor[];
+  totalPages: number;
+}
+
 const TutorsList: React.FC = () => {
   const [searchParams] = useSearchParams();
   const [page, setPage] = useState(1);
@@ -34,7 +39,7 @@ const TutorsList: React.FC = () => {
   const grade = searchParams.get('grade') || '';
   
   // Fetch tutors based on search params
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, error } = useQuery<TutorSearchResponse>({
     queryKey: ['tutors', subject, location, expMin, expMax, grade, page],
     queryFn: () => tutorApi.searchTutors({
       subject,

@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import BookingForm from '@/components/Tutors/BookingForm';
+import { Tutor } from '@/components/Tutors/TutorsList';
 import { 
   Calendar, 
   MapPin, 
@@ -29,7 +30,7 @@ const TutorProfile = () => {
   const { id } = useParams<{ id: string }>();
   const [isBookingOpen, setIsBookingOpen] = React.useState(false);
   
-  const { data: tutor, isLoading, error } = useQuery({
+  const { data: tutor, isLoading, error } = useQuery<Tutor>({
     queryKey: ['tutor', id],
     queryFn: () => tutorApi.getTutorById(id || ''),
     enabled: !!id
