@@ -1,10 +1,10 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { cn } from '@/lib/utils';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { useToast } from '@/hooks/use-toast';
 import {
   MapPin,
@@ -50,8 +50,8 @@ interface KingdomZone {
   icon: React.ReactNode;
   color: string;
   position: {
-    top: string;
-    left: string;
+    desktop: { top: string; left: string; };
+    mobile: { top: string; left: string; };
   };
   status: 'beginner' | 'intermediate' | 'advanced';
   subject: 'math' | 'science' | 'language' | 'arts' | 'social';
@@ -63,6 +63,7 @@ interface KingdomZone {
 
 const KingdomMap: React.FC = () => {
   const { toast } = useToast();
+  const isMobile = useIsMobile();
   const [selectedZone, setSelectedZone] = useState<KingdomZone | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedLevel, setSelectedLevel] = useState<ZoneLevel | null>(null);
@@ -79,7 +80,10 @@ const KingdomMap: React.FC = () => {
       description: 'Master fractions and decimals in this magical woodland filled with math puzzles.',
       icon: <Calculator size={24} />,
       color: 'bg-green-500',
-      position: { top: '20%', left: '15%' },
+      position: {
+        desktop: { top: '20%', left: '15%' },
+        mobile: { top: '15%', left: '25%' }
+      },
       status: 'beginner',
       subject: 'math',
       locked: false,
@@ -129,7 +133,10 @@ const KingdomMap: React.FC = () => {
       description: 'Explore the stars and planets while learning about nouns, verbs, and sentences.',
       icon: <BookOpen size={24} />,
       color: 'bg-purple-500',
-      position: { top: '35%', left: '65%' },
+      position: {
+        desktop: { top: '35%', left: '65%' },
+        mobile: { top: '30%', left: '65%' }
+      },
       status: 'beginner',
       subject: 'language',
       locked: false,
@@ -170,7 +177,10 @@ const KingdomMap: React.FC = () => {
       description: 'Discover plants, animals, and natural phenomena in this wild landscape.',
       icon: <Beaker size={24} />,
       color: 'bg-yellow-500',
-      position: { top: '60%', left: '35%' },
+      position: {
+        desktop: { top: '60%', left: '35%' },
+        mobile: { top: '45%', left: '25%' }
+      },
       status: 'beginner',
       subject: 'science',
       locked: false,
@@ -211,7 +221,10 @@ const KingdomMap: React.FC = () => {
       description: 'Navigate through islands of equations and variables in this tropical paradise.',
       icon: <Calculator size={24} />,
       color: 'bg-blue-500',
-      position: { top: '30%', left: '30%' },
+      position: {
+        desktop: { top: '30%', left: '30%' },
+        mobile: { top: '30%', left: '10%' }
+      },
       status: 'intermediate',
       subject: 'math',
       locked: true,
@@ -253,7 +266,10 @@ const KingdomMap: React.FC = () => {
       description: 'Climb mountains of knowledge about ancient civilizations and important events.',
       icon: <Globe size={24} />,
       color: 'bg-orange-500',
-      position: { top: '70%', left: '75%' },
+      position: {
+        desktop: { top: '70%', left: '75%' },
+        mobile: { top: '60%', left: '70%' }
+      },
       status: 'intermediate',
       subject: 'social',
       locked: true,
@@ -295,7 +311,10 @@ const KingdomMap: React.FC = () => {
       description: 'Express yourself through drawing, painting, and other creative activities.',
       icon: <Puzzle size={24} />,
       color: 'bg-pink-500',
-      position: { top: '50%', left: '55%' },
+      position: {
+        desktop: { top: '50%', left: '55%' },
+        mobile: { top: '45%', left: '65%' }
+      },
       status: 'beginner',
       subject: 'arts',
       locked: false,
@@ -336,7 +355,10 @@ const KingdomMap: React.FC = () => {
       description: 'Discover rhythm, melody, and harmony in this musical wonderland.',
       icon: <Music size={24} />,
       color: 'bg-indigo-500',
-      position: { top: '80%', left: '25%' },
+      position: {
+        desktop: { top: '80%', left: '25%' },
+        mobile: { top: '75%', left: '20%' }
+      },
       status: 'intermediate',
       subject: 'arts',
       locked: true,
@@ -378,7 +400,10 @@ const KingdomMap: React.FC = () => {
       description: 'Special limited-time challenges that test your skills across all subjects.',
       icon: <Zap size={24} />,
       color: 'bg-red-500',
-      position: { top: '40%', left: '80%' },
+      position: {
+        desktop: { top: '40%', left: '80%' },
+        mobile: { top: '75%', left: '65%' }
+      },
       status: 'advanced',
       subject: 'math',
       locked: false,
@@ -396,9 +421,19 @@ const KingdomMap: React.FC = () => {
       ]
     }
   ];
+
+  const zonePaths = [
+    { from: 'fractions-forest', to: 'algebra-archipelago', locked: true },
+    { from: 'fractions-forest', to: 'grammar-galaxy', locked: false },
+    { from: 'grammar-galaxy', to: 'history-highlands', locked: true },
+    { from: 'grammar-galaxy', to: 'art-atelier', locked: false },
+    { from: 'science-savannah', to: 'fractions-forest', locked: false },
+    { from: 'science-savannah', to: 'art-atelier', locked: false },
+    { from: 'art-atelier', to: 'music-meadow', locked: true },
+    { from: 'grammar-galaxy', to: 'weekly-challenge', locked: false },
+  ];
   
   useEffect(() => {
-    // Set a default buddy tip
     setBuddyTip("Click on any zone to start your learning adventure!");
   }, []);
   
@@ -429,7 +464,6 @@ const KingdomMap: React.FC = () => {
     if (!selectedLevel) return;
     
     setLevelDialogOpen(false);
-    // Show level content after a short delay
     setTimeout(() => {
       setLevelContentOpen(true);
     }, 300);
@@ -442,7 +476,6 @@ const KingdomMap: React.FC = () => {
     setEarnedXp(xpEarned);
     setShowXpAnimation(true);
     
-    // Update the level's completion status
     const updatedZones = zones.map(zone => {
       if (zone.id === selectedZone.id) {
         const updatedLevels = zone.levels.map(level => {
@@ -452,7 +485,6 @@ const KingdomMap: React.FC = () => {
           return level;
         });
         
-        // Calculate new progress
         const completedCount = updatedLevels.filter(l => l.isCompleted).length;
         const newProgress = Math.round((completedCount / updatedLevels.length) * 100);
         
@@ -465,7 +497,6 @@ const KingdomMap: React.FC = () => {
       return zone;
     });
     
-    // This would normally update state, but for this demo we'll just show a success message
     toast({
       title: "Level Completed!",
       description: `You earned ${xpEarned} XP and unlocked new content!`,
@@ -474,7 +505,6 @@ const KingdomMap: React.FC = () => {
     
     setLevelContentOpen(false);
     
-    // Hide XP animation after a delay
     setTimeout(() => {
       setShowXpAnimation(false);
     }, 3000);
@@ -537,7 +567,6 @@ const KingdomMap: React.FC = () => {
     }
   };
   
-  // Function to render level content based on selectedLevel
   const renderLevelContent = () => {
     if (!selectedLevel || !selectedZone) return null;
     
@@ -564,7 +593,6 @@ const KingdomMap: React.FC = () => {
           
           <div className="py-4">
             <div className="bg-slate-50 rounded-lg p-6 mb-6">
-              {/* Dynamic content based on subject */}
               {selectedZone.subject === 'math' && (
                 <div className="space-y-6">
                   <h3 className="font-bold text-lg">Problem 1 of 3</h3>
@@ -688,81 +716,91 @@ const KingdomMap: React.FC = () => {
     );
   };
   
+  const renderPathConnections = () => {
+    return zonePaths.map((path, index) => {
+      const fromZone = zones.find(z => z.id === path.from);
+      const toZone = zones.find(z => z.id === path.to);
+      
+      if (!fromZone || !toZone) return null;
+      
+      const fromPos = isMobile ? fromZone.position.mobile : fromZone.position.desktop;
+      const toPos = isMobile ? toZone.position.mobile : toZone.position.desktop;
+      
+      const fromX = parseInt(fromPos.left) + 8;
+      const fromY = parseInt(fromPos.top) + 8;
+      const toX = parseInt(toPos.left) + 8;
+      const toY = parseInt(toPos.top) + 8;
+      
+      return (
+        <path
+          key={`path-${index}`}
+          d={`M ${fromX}% ${fromY}% L ${toX}% ${toY}%`}
+          stroke={path.locked ? "#9CA3AF" : "#CBD5E1"} 
+          strokeWidth="3"
+          strokeDasharray="5,5"
+          strokeLinecap="round"
+        />
+      );
+    });
+  };
+  
   return (
     <div className="w-full">
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
         <div>
           <h2 className="text-2xl font-bold">Kingdom Learning Map</h2>
           <p className="text-gray-500">Explore different zones and master new skills!</p>
         </div>
-        <div className="flex items-center gap-3">
-          <div className="bg-white p-3 rounded-lg shadow-sm flex items-center gap-2">
-            <Star className="h-5 w-5 text-yellow-500" />
-            <span className="font-bold">450 XP</span>
+        <div className="flex items-center gap-3 mt-2 md:mt-0">
+          <div className="bg-white p-2 md:p-3 rounded-lg shadow-sm flex items-center gap-2">
+            <Star className="h-4 w-4 md:h-5 md:w-5 text-yellow-500" />
+            <span className="font-bold text-sm md:text-base">450 XP</span>
           </div>
-          <div className="bg-white p-3 rounded-lg shadow-sm flex items-center gap-2">
-            <Trophy className="h-5 w-5 text-purple-500" />
-            <span className="font-bold">Level 4</span>
+          <div className="bg-white p-2 md:p-3 rounded-lg shadow-sm flex items-center gap-2">
+            <Trophy className="h-4 w-4 md:h-5 md:w-5 text-purple-500" />
+            <span className="font-bold text-sm md:text-base">Level 4</span>
           </div>
         </div>
       </div>
       
-      <div className="relative w-full h-[600px] rounded-3xl bg-blue-50 overflow-hidden shadow-xl">
-        {/* Map background with grid lines */}
+      <div className="relative w-full h-[400px] md:h-[600px] rounded-3xl bg-blue-50 overflow-hidden shadow-xl">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDEwIEwgNDAgMTAgTSAxMCAwIEwgMTAgNDAgTSAwIDIwIEwgNDAgMjAgTSAyMCAwIEwgMjAgNDAgTSAwIDMwIEwgNDAgMzAgTSAzMCAwIEwgMzAgNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzAwMDAzMzA4IiBvcGFjaXR5PSIwLjIiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')]">
-          {/* Map decoration elements */}
-          <div className="absolute top-[15%] left-[45%] w-16 h-16 bg-blue-200 rounded-full opacity-50 transform rotate-45"></div>
-          <div className="absolute top-[65%] left-[25%] w-24 h-8 bg-blue-300 rounded-full opacity-40"></div>
-          <div className="absolute top-[45%] left-[85%] w-8 h-24 bg-blue-300 rounded-full opacity-40"></div>
-          <div className="absolute top-[85%] left-[50%] w-32 h-10 bg-blue-200 rounded-full opacity-50"></div>
+          <div className="absolute top-[15%] left-[45%] w-12 h-12 md:w-16 md:h-16 bg-blue-200 rounded-full opacity-50 transform rotate-45"></div>
+          <div className="absolute top-[65%] left-[25%] w-16 h-6 md:w-24 md:h-8 bg-blue-300 rounded-full opacity-40"></div>
+          <div className="absolute top-[45%] left-[85%] w-6 h-16 md:w-8 md:h-24 bg-blue-300 rounded-full opacity-40"></div>
+          <div className="absolute top-[85%] left-[50%] w-24 h-8 md:w-32 md:h-10 bg-blue-200 rounded-full opacity-50"></div>
           
-          {/* Zone connections (paths) */}
           <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
-            {/* Beginner zones connections */}
-            <path d="M 145,130 L 280,160" stroke="#CBD5E1" strokeWidth="6" strokeDasharray="8 4" strokeLinecap="round" />
-            <path d="M 280,160 L 330,310" stroke="#CBD5E1" strokeWidth="6" strokeDasharray="8 4" strokeLinecap="round" />
-            <path d="M 330,310 L 620,370" stroke="#CBD5E1" strokeWidth="6" strokeDasharray="8 4" strokeLinecap="round" />
-            <path d="M 145,130 L 330,310" stroke="#CBD5E1" strokeWidth="6" strokeDasharray="8 4" strokeLinecap="round" />
-            <path d="M 620,180 L 330,310" stroke="#CBD5E1" strokeWidth="6" strokeDasharray="8 4" strokeLinecap="round" />
-            
-            {/* Intermediate zones connections */}
-            <path d="M 145,130 L 280,180" stroke="#9CA3AF" strokeWidth="6" strokeDasharray="8 4" strokeLinecap="round" />
-            <path d="M 620,180 L 720,380" stroke="#9CA3AF" strokeWidth="6" strokeDasharray="8 4" strokeLinecap="round" />
-            <path d="M 330,310 L 250,480" stroke="#9CA3AF" strokeWidth="6" strokeDasharray="8 4" strokeLinecap="round" />
-            
-            {/* Weekly challenge connection */}
-            <path d="M 620,180 L 750,220" stroke="#F87171" strokeWidth="6" strokeDasharray="4 4" strokeLinecap="round" />
+            {renderPathConnections()}
           </svg>
           
-          {/* Zone markers */}
           {zones.map((zone) => (
             <div
               key={zone.id}
               className={cn(
-                "absolute w-16 h-16 rounded-full flex items-center justify-center cursor-pointer transition-transform duration-300 hover:scale-110",
+                "absolute w-12 h-12 md:w-16 md:h-16 rounded-full flex items-center justify-center cursor-pointer transition-transform duration-300 hover:scale-110",
                 zone.locked ? 'opacity-60' : '',
                 zone.color,
                 zone.id === 'weekly-challenge' ? 'animate-pulse' : '',
                 !zone.locked && 'shadow-lg'
               )}
               style={{
-                top: zone.position.top,
-                left: zone.position.left,
+                top: isMobile ? zone.position.mobile.top : zone.position.desktop.top,
+                left: isMobile ? zone.position.mobile.left : zone.position.desktop.left,
               }}
               onClick={() => handleZoneClick(zone)}
             >
               <div className="relative">
-                {/* Zone progress indicator */}
                 {zone.progress > 0 && (
                   <svg className="absolute inset-0 w-full h-full -rotate-90">
                     <circle
-                      cx="32"
-                      cy="32"
-                      r="28"
+                      cx={isMobile ? "24" : "32"}
+                      cy={isMobile ? "24" : "32"}
+                      r={isMobile ? "21" : "28"}
                       strokeWidth="4"
                       stroke="rgba(255, 255, 255, 0.5)"
                       fill="none"
-                      strokeDasharray={`${2 * Math.PI * 28 * (zone.progress / 100)} ${2 * Math.PI * 28}`}
+                      strokeDasharray={`${2 * Math.PI * (isMobile ? 21 : 28) * (zone.progress / 100)} ${2 * Math.PI * (isMobile ? 21 : 28)}`}
                       strokeLinecap="round"
                     />
                   </svg>
@@ -770,21 +808,22 @@ const KingdomMap: React.FC = () => {
                 
                 <div className="absolute -top-3 -right-3">
                   {zone.locked ? (
-                    <span className="w-6 h-6 bg-gray-700 rounded-full flex items-center justify-center text-white text-xs">
-                      <Lock size={12} />
+                    <span className="w-5 h-5 md:w-6 md:h-6 bg-gray-700 rounded-full flex items-center justify-center text-white text-xs">
+                      <Lock size={isMobile ? 10 : 12} />
                     </span>
                   ) : (
-                    <span className="w-6 h-6 bg-white rounded-full flex items-center justify-center text-xs">
+                    <span className="w-5 h-5 md:w-6 md:h-6 bg-white rounded-full flex items-center justify-center text-xs">
                       {getSubjectIcon(zone.subject)}
                     </span>
                   )}
                 </div>
-                <div className="text-white text-xs font-bold">{zone.name.split(' ')[0]}</div>
+                <div className="text-white text-xs font-bold text-center scale-75 md:scale-100">
+                  {isMobile ? zone.name.split(' ')[0] : zone.name.split(' ')[0]}
+                </div>
               </div>
             </div>
           ))}
           
-          {/* Zone Dialog */}
           <AlertDialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <AlertDialogContent className="max-w-3xl">
               {selectedZone && (
@@ -911,7 +950,6 @@ const KingdomMap: React.FC = () => {
             </AlertDialogContent>
           </AlertDialog>
           
-          {/* Level Dialog */}
           <AlertDialog open={levelDialogOpen} onOpenChange={setLevelDialogOpen}>
             <AlertDialogContent>
               {selectedLevel && (
@@ -971,10 +1009,8 @@ const KingdomMap: React.FC = () => {
             </AlertDialogContent>
           </AlertDialog>
           
-          {/* Level content */}
           {renderLevelContent()}
           
-          {/* XP earned animation */}
           {showXpAnimation && (
             <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
               <div className="bg-yellow-500 text-white px-6 py-4 rounded-full flex items-center gap-2 animate-bounce shadow-xl">
@@ -989,7 +1025,6 @@ const KingdomMap: React.FC = () => {
   );
 };
 
-// Add missing components
 const CheckCircle = (props: React.ComponentProps<typeof Star>) => {
   return (
     <svg

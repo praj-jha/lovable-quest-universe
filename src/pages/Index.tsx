@@ -1,10 +1,14 @@
+
 import React from 'react';
+import { Link } from 'react-router-dom';
 import HeroSection from '@/components/Hero/HeroSection';
 import FeaturesSection from '@/components/Features/FeaturesSection';
 import ForEducatorsSection from '@/components/Educators/ForEducatorsSection';
 import InteractiveKingdomMap from '@/components/Kingdom/InteractiveKingdomMap';
+
 const Index = () => {
-  return <div className="min-h-screen bg-gradient-to-b from-white to-blue-50">
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-white to-blue-50">
       <div id="hero">
         <HeroSection />
       </div>
@@ -17,7 +21,7 @@ const Index = () => {
               Dive into an exciting world of knowledge where each zone offers unique learning adventures tailored to different subjects and skills.
             </p>
           </div>
-          <InteractiveKingdomMap />
+          <InteractiveKingdomMap demoMode={true} />
         </div>
       </div>
       
@@ -71,9 +75,9 @@ const Index = () => {
           </div>
           
           <div className="text-center mt-12">
-            <a href="/family" className="inline-block bg-lovable-blue text-white px-6 py-3 rounded-full font-medium hover:bg-lovable-purple transition-colors">
+            <Link to="/parent-analytics" className="inline-block bg-lovable-blue text-white px-6 py-3 rounded-full font-medium hover:bg-lovable-purple transition-colors">
               Explore Family Features
-            </a>
+            </Link>
           </div>
         </div>
       </div>
@@ -122,6 +126,8 @@ const Index = () => {
           </div>
         </div>
       </footer>
-    </div>;
+    </div>
+  );
 };
+
 export default Index;
