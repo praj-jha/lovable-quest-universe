@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -613,7 +614,7 @@ const KingdomMap: React.FC<KingdomMapProps> = ({
                       <Button variant="outline" className="py-6" onClick={handleCompleteLevelFailure}>1/3</Button>
                       <Button variant="outline" className="py-6" onClick={handleCompleteLevelFailure}>3/5</Button>
                       <Button variant="outline" className="py-6" onClick={handleCompleteLevelSuccess}>3/8</Button>
-                      <Button variant="outline" className="py-6" onClick={handleCompleteLevelFailure}>5/8</8Button>
+                      <Button variant="outline" className="py-6" onClick={handleCompleteLevelFailure}>5/8</Button>
                     </div>
                   </div>
                   
@@ -796,7 +797,222 @@ const KingdomMap: React.FC<KingdomMapProps> = ({
                 zone.color,
                 zone.id === 'weekly-challenge' ? 'animate-pulse' : '',
                 !zone.locked && 'shadow-lg',
-                isMobile ? 'w-16 h-16' : 'w-20 h-20'
+                isMobile ? 'w-16 h-16' : 'w-24 h-24'
               )}
               style={{
-                top
+                top: isMobile ? zone.position.mobile.top : zone.position.desktop.top,
+                left: isMobile ? zone.position.mobile.left : zone.position.desktop.left,
+                transform: 'translate(-50%, -50%)',
+              }}
+              onClick={() => handleZoneClick(zone)}
+            >
+              <div className="flex flex-col items-center">
+                <div className="text-white">
+                  {zone.icon}
+                </div>
+                <div className="text-white text-xs mt-1 font-bold">
+                  {zone.locked && <Lock size={16} className="mx-auto" />}
+                </div>
+              </div>
+              <div className={`absolute -bottom-8 text-center w-32 text-sm font-semibold ${!zone.locked ? 'text-gray-800' : 'text-gray-500'}`}>
+                {zone.name}
+              </div>
+              {zone.progress > 0 && (
+                <div className="absolute -bottom-12 w-16 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-green-500 rounded-full" 
+                    style={{ width: `${zone.progress}%` }}
+                  ></div>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+      
+      <AlertDialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <AlertDialogContent className="md:max-w-2xl">
+          {selectedZone && (
+            <>
+              <AlertDialogHeader>
+                <div className="flex items-center gap-2">
+                  <span className={`w-8 h-8 flex items-center justify-center rounded-full ${selectedZone.color} text-white`}>
+                    {selectedZone.icon}
+                  </span>
+                  <AlertDialogTitle className="text-2xl">{selectedZone.name}</AlertDialogTitle>
+                  {getStatusBadge(selectedZone.status)}
+                </div>
+                <AlertDialogDescription className="text-base">
+                  {selectedZone.description}
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              
+              <div className="py-4">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    {getSubjectIcon(selectedZone.subject)}
+                    <span className="font-medium capitalize">{selectedZone.subject} Zone</span>
+                  </div>
+                  
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-gray-500">Progress:</span>
+                    <Progress value={selectedZone.progress} className="w-24 h-2" />
+                    <span className="text-sm font-medium">{selectedZone.progress}%</span>
+                  </div>
+                </div>
+                
+                {selectedZone.locked ? (
+                  <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-4">
+                    <div className="flex items-start gap-3">
+                      <Lock className="h-5 w-5 text-amber-500 mt-0.5" />
+                      <div>
+                        <h4 className="font-semibold text-amber-800 mb-1">Zone Locked</h4>
+                        <p className="text-amber-700 text-sm">
+                          {selectedZone.requiredZoneId && (
+                            <>Complete <span className="font-semibold">{zones.find(z => z.id === selectedZone.requiredZoneId)?.name}</span> first to unlock this zone!</>
+                          )}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold">Available Lessons ({getCompletedLevelsCount(selectedZone)}/{selectedZone.levels.length} completed)</h3>
+                    
+                    <div className="grid grid-cols-1 gap-4">
+                      {selectedZone.levels.map((level) => (
+                        <Card key={level.id} className={`${level.isCompleted ? 'bg-green-50 border-green-200' : 'bg-white hover:bg-gray-50 cursor-pointer'}`} onClick={() => handleLevelSelect(level)}>
+                          <CardContent className="p-4">
+                            <div className="flex justify-between items-center">
+                              <div className="flex items-start gap-3">
+                                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${level.isCompleted ? 'bg-green-500 text-white' : 'bg-gray-100'}`}>
+                                  {level.isCompleted ? (
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                  ) : (
+                                    <span className="text-xs font-semibold">{level.id.split('-')[1].replace('level', '')}</span>
+                                  )}
+                                </div>
+                                
+                                <div className="flex-1">
+                                  <h4 className="font-semibold text-gray-900">{level.name}</h4>
+                                  <p className="text-sm text-gray-600 mt-1">{level.description}</p>
+                                  
+                                  <div className="flex items-center gap-2 mt-2">
+                                    {getDifficultyBadge(level.difficulty)}
+                                    <div className="flex items-center text-gray-500 text-xs">
+                                      <svg className="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                      </svg>
+                                      {level.timeEstimate}
+                                    </div>
+                                    <div className="flex items-center text-yellow-500 text-xs">
+                                      <svg className="w-3.5 h-3.5 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                                      </svg>
+                                      {level.xpReward} XP
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              
+                              <ChevronRight className="h-5 w-5 text-gray-400" />
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                
+                <div className="flex items-center gap-3 mt-6">
+                  <BuddyBot size="sm" expression="happy" />
+                  <p className="text-sm text-gray-500">{buddyTip}</p>
+                </div>
+              </div>
+              
+              <AlertDialogFooter>
+                <AlertDialogCancel>Close</AlertDialogCancel>
+                {!selectedZone.locked && getCompletedLevelsCount(selectedZone) < selectedZone.levels.length && (
+                  <Button>Continue Learning</Button>
+                )}
+              </AlertDialogFooter>
+            </>
+          )}
+        </AlertDialogContent>
+      </AlertDialog>
+      
+      <AlertDialog open={levelDialogOpen} onOpenChange={setLevelDialogOpen}>
+        <AlertDialogContent>
+          {selectedZone && selectedLevel && (
+            <>
+              <AlertDialogHeader>
+                <div className="flex items-center gap-2">
+                  {getDifficultyBadge(selectedLevel.difficulty)}
+                  <AlertDialogTitle>{selectedLevel.name}</AlertDialogTitle>
+                </div>
+                <AlertDialogDescription className="text-base">
+                  {selectedLevel.description}
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              
+              <div className="py-4">
+                <div className="flex items-center gap-4 mb-4 text-sm">
+                  <div className="flex items-center text-gray-700">
+                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    {selectedLevel.timeEstimate}
+                  </div>
+                  <div className="flex items-center text-yellow-600">
+                    <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                    </svg>
+                    {selectedLevel.xpReward} XP Reward
+                  </div>
+                </div>
+                
+                <div className="bg-blue-50 border border-blue-100 rounded-lg p-4">
+                  <div className="flex items-start gap-3">
+                    <svg className="w-5 h-5 text-blue-500 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <div>
+                      <h4 className="font-semibold text-blue-800 mb-1">Tip</h4>
+                      <p className="text-blue-700 text-sm">
+                        This level includes interactive exercises. Give your best effort - you can always try again if needed!
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-3 mt-4">
+                  <BuddyBot size="sm" expression="excited" />
+                  <p className="text-sm text-gray-500">I'll help you through this challenge!</p>
+                </div>
+              </div>
+              
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <Button onClick={handleStartLevel}>Start Level</Button>
+              </AlertDialogFooter>
+            </>
+          )}
+        </AlertDialogContent>
+      </AlertDialog>
+      
+      {renderLevelContent()}
+      
+      {showXpAnimation && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
+          <div className="bg-yellow-500 text-white px-6 py-3 rounded-full text-xl font-bold animate-bounce shadow-xl">
+            +{earnedXp} XP
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default KingdomMap;
