@@ -93,7 +93,7 @@ const Index = () => {
             <div>
               <h4 className="font-bold mb-4">Features</h4>
               <ul className="space-y-2">
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Kingdom Map</a></li>
+                <li><a href="#kingdom-map" className="text-gray-400 hover:text-white transition-colors">Kingdom Map</a></li>
                 <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Learning Zones</a></li>
                 <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Progress Tracking</a></li>
                 <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Rewards System</a></li>
@@ -103,8 +103,8 @@ const Index = () => {
             <div>
               <h4 className="font-bold mb-4">Resources</h4>
               <ul className="space-y-2">
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">For Parents</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">For Educators</a></li>
+                <li><Link to="/parent-analytics" className="text-gray-400 hover:text-white transition-colors">For Parents</Link></li>
+                <li><Link to="/for-educators" className="text-gray-400 hover:text-white transition-colors">For Educators</Link></li>
                 <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Blog</a></li>
                 <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Support</a></li>
               </ul>

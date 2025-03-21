@@ -61,7 +61,17 @@ interface KingdomZone {
   requiredZoneId?: string;
 }
 
-const KingdomMap: React.FC = () => {
+interface KingdomMapProps {
+  selectedZone?: string | null;
+  onZoneSelect?: (zoneId: string) => void;
+  demoMode?: boolean;
+}
+
+const KingdomMap: React.FC<KingdomMapProps> = ({ 
+  selectedZone: propSelectedZone,
+  onZoneSelect,
+  demoMode = false 
+}) => {
   const { toast } = useToast();
   const isMobile = useIsMobile();
   const [selectedZone, setSelectedZone] = useState<KingdomZone | null>(null);
@@ -603,7 +613,7 @@ const KingdomMap: React.FC = () => {
                       <Button variant="outline" className="py-6" onClick={handleCompleteLevelFailure}>1/3</Button>
                       <Button variant="outline" className="py-6" onClick={handleCompleteLevelFailure}>3/5</Button>
                       <Button variant="outline" className="py-6" onClick={handleCompleteLevelSuccess}>3/8</Button>
-                      <Button variant="outline" className="py-6" onClick={handleCompleteLevelFailure}>5/8</Button>
+                      <Button variant="outline" className="py-6" onClick={handleCompleteLevelFailure}>5/8</8Button>
                     </div>
                   </div>
                   
@@ -715,7 +725,7 @@ const KingdomMap: React.FC = () => {
       </AlertDialog>
     );
   };
-  
+
   const renderPathConnections = () => {
     return zonePaths.map((path, index) => {
       const fromZone = zones.find(z => z.id === path.from);
@@ -726,19 +736,22 @@ const KingdomMap: React.FC = () => {
       const fromPos = isMobile ? fromZone.position.mobile : fromZone.position.desktop;
       const toPos = isMobile ? toZone.position.mobile : toZone.position.desktop;
       
-      const fromX = parseInt(fromPos.left) + 8;
-      const fromY = parseInt(fromPos.top) + 8;
-      const toX = parseInt(toPos.left) + 8;
-      const toY = parseInt(toPos.top) + 8;
+      const fromX = parseInt(fromPos.left);
+      const fromY = parseInt(fromPos.top);
+      const toX = parseInt(toPos.left);
+      const toY = parseInt(toPos.top);
+      
+      const circleSize = isMobile ? 24 : 32;
       
       return (
         <path
           key={`path-${index}`}
           d={`M ${fromX}% ${fromY}% L ${toX}% ${toY}%`}
-          stroke={path.locked ? "#9CA3AF" : "#CBD5E1"} 
-          strokeWidth="3"
-          strokeDasharray="5,5"
+          stroke={path.locked ? "#9CA3AF" : "#60A5FA"} 
+          strokeWidth="4"
+          strokeDasharray={path.locked ? "6,8" : "8,12"}
           strokeLinecap="round"
+          className="transition-all duration-300"
         />
       );
     });
@@ -778,291 +791,12 @@ const KingdomMap: React.FC = () => {
             <div
               key={zone.id}
               className={cn(
-                "absolute w-12 h-12 md:w-16 md:h-16 rounded-full flex items-center justify-center cursor-pointer transition-transform duration-300 hover:scale-110",
-                zone.locked ? 'opacity-60' : '',
+                "absolute rounded-full flex items-center justify-center cursor-pointer transition-transform duration-300 hover:scale-110",
+                zone.locked ? 'opacity-70' : '',
                 zone.color,
                 zone.id === 'weekly-challenge' ? 'animate-pulse' : '',
-                !zone.locked && 'shadow-lg'
+                !zone.locked && 'shadow-lg',
+                isMobile ? 'w-16 h-16' : 'w-20 h-20'
               )}
               style={{
-                top: isMobile ? zone.position.mobile.top : zone.position.desktop.top,
-                left: isMobile ? zone.position.mobile.left : zone.position.desktop.left,
-              }}
-              onClick={() => handleZoneClick(zone)}
-            >
-              <div className="relative">
-                {zone.progress > 0 && (
-                  <svg className="absolute inset-0 w-full h-full -rotate-90">
-                    <circle
-                      cx={isMobile ? "24" : "32"}
-                      cy={isMobile ? "24" : "32"}
-                      r={isMobile ? "21" : "28"}
-                      strokeWidth="4"
-                      stroke="rgba(255, 255, 255, 0.5)"
-                      fill="none"
-                      strokeDasharray={`${2 * Math.PI * (isMobile ? 21 : 28) * (zone.progress / 100)} ${2 * Math.PI * (isMobile ? 21 : 28)}`}
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                )}
-                
-                <div className="absolute -top-3 -right-3">
-                  {zone.locked ? (
-                    <span className="w-5 h-5 md:w-6 md:h-6 bg-gray-700 rounded-full flex items-center justify-center text-white text-xs">
-                      <Lock size={isMobile ? 10 : 12} />
-                    </span>
-                  ) : (
-                    <span className="w-5 h-5 md:w-6 md:h-6 bg-white rounded-full flex items-center justify-center text-xs">
-                      {getSubjectIcon(zone.subject)}
-                    </span>
-                  )}
-                </div>
-                <div className="text-white text-xs font-bold text-center scale-75 md:scale-100">
-                  {isMobile ? zone.name.split(' ')[0] : zone.name.split(' ')[0]}
-                </div>
-              </div>
-            </div>
-          ))}
-          
-          <AlertDialog open={dialogOpen} onOpenChange={setDialogOpen}>
-            <AlertDialogContent className="max-w-3xl">
-              {selectedZone && (
-                <>
-                  <AlertDialogHeader>
-                    <div className="flex items-center gap-2">
-                      <div className={cn("w-10 h-10 rounded-full flex items-center justify-center", selectedZone.color)}>
-                        {selectedZone.icon}
-                      </div>
-                      <AlertDialogTitle className="text-2xl">{selectedZone.name}</AlertDialogTitle>
-                    </div>
-                    <AlertDialogDescription className="text-base space-y-2">
-                      <p>{selectedZone.description}</p>
-                      <div className="flex items-center gap-2 mt-2">
-                        {getSubjectIcon(selectedZone.subject)}
-                        <span className="capitalize">{selectedZone.subject}</span>
-                        <span className="mx-2">•</span>
-                        {getStatusBadge(selectedZone.status)}
-                      </div>
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  
-                  {!selectedZone.locked ? (
-                    <div className="py-4">
-                      <div className="flex items-center justify-between mb-4">
-                        <h3 className="font-bold text-lg">Progress</h3>
-                        <span className="text-sm text-gray-500">
-                          {getCompletedLevelsCount(selectedZone)}/{selectedZone.levels.length} activities completed
-                        </span>
-                      </div>
-                      <Progress
-                        value={selectedZone.progress}
-                        className="h-2 mb-6"
-                      />
-                      
-                      <div className="space-y-4">
-                        {selectedZone.levels.map((level) => (
-                          <Card
-                            key={level.id}
-                            className={cn(
-                              "border transition-all",
-                              level.isCompleted ? "bg-gray-50 border-green-100" : "hover:border-blue-200"
-                            )}
-                          >
-                            <CardContent className="p-4">
-                              <div className="flex items-start justify-between">
-                                <div className="flex-1">
-                                  <div className="flex items-center gap-2 mb-1">
-                                    {level.isCompleted && (
-                                      <div className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center">
-                                        <CheckCircle className="h-3 w-3 text-green-600" />
-                                      </div>
-                                    )}
-                                    <h4 className="font-bold">{level.name}</h4>
-                                    {getDifficultyBadge(level.difficulty)}
-                                  </div>
-                                  <p className="text-sm text-gray-600 mb-2">{level.description}</p>
-                                  <div className="flex items-center text-xs text-gray-500 gap-2">
-                                    <Clock className="h-3 w-3" />
-                                    <span>{level.timeEstimate}</span>
-                                    <Star className="h-3 w-3 text-yellow-500 ml-2" />
-                                    <span>+{level.xpReward} XP</span>
-                                  </div>
-                                </div>
-                                <Button
-                                  variant={level.isCompleted ? "outline" : "default"}
-                                  size="sm"
-                                  className="ml-4 flex-shrink-0"
-                                  onClick={() => handleLevelSelect(level)}
-                                >
-                                  {level.isCompleted ? "Review" : "Start"}
-                                  <ChevronRight className="h-4 w-4 ml-1" />
-                                </Button>
-                              </div>
-                            </CardContent>
-                          </Card>
-                        ))}
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="py-4">
-                      <div className="bg-orange-50 rounded-lg p-6 text-center">
-                        <Lock className="h-12 w-12 text-orange-500 mx-auto mb-4" />
-                        <h3 className="font-bold text-lg mb-2">Zone Locked</h3>
-                        <p className="text-gray-600 mb-4">
-                          {selectedZone.requiredZoneId && (
-                            <>
-                              Complete{" "}
-                              <span className="font-semibold">
-                                {zones.find(z => z.id === selectedZone.requiredZoneId)?.name}
-                              </span>{" "}
-                              first to unlock this zone!
-                            </>
-                          )}
-                        </p>
-                        <Button
-                          variant="outline"
-                          onClick={() => {
-                            if (selectedZone.requiredZoneId) {
-                              const requiredZone = zones.find(
-                                (z) => z.id === selectedZone.requiredZoneId
-                              );
-                              if (requiredZone) {
-                                setSelectedZone(requiredZone);
-                              }
-                            }
-                          }}
-                        >
-                          Go to Required Zone
-                        </Button>
-                      </div>
-                    </div>
-                  )}
-                  
-                  <AlertDialogFooter className="flex items-center justify-between gap-4 sm:justify-between">
-                    <div className="flex items-center gap-2">
-                      <BuddyBot size="sm" expression="happy" />
-                      <p className="text-sm">{buddyTip}</p>
-                    </div>
-                    <AlertDialogCancel>Close</AlertDialogCancel>
-                  </AlertDialogFooter>
-                </>
-              )}
-            </AlertDialogContent>
-          </AlertDialog>
-          
-          <AlertDialog open={levelDialogOpen} onOpenChange={setLevelDialogOpen}>
-            <AlertDialogContent>
-              {selectedLevel && (
-                <>
-                  <AlertDialogHeader>
-                    <div className="flex items-center gap-2">
-                      {getDifficultyBadge(selectedLevel.difficulty)}
-                      <AlertDialogTitle>{selectedLevel.name}</AlertDialogTitle>
-                    </div>
-                    <AlertDialogDescription>
-                      <p>{selectedLevel.description}</p>
-                      <div className="flex items-center gap-2 mt-2 text-sm text-gray-600">
-                        <Clock className="h-4 w-4" />
-                        <span>Estimated time: {selectedLevel.timeEstimate}</span>
-                      </div>
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  
-                  <div className="py-4">
-                    <div className="bg-blue-50 rounded-lg p-6 mb-4">
-                      <div className="flex items-start gap-4">
-                        <div className="bg-blue-500 text-white rounded-full p-3">
-                          <Trophy className="h-6 w-6" />
-                        </div>
-                        <div>
-                          <h3 className="font-bold text-lg mb-1">Rewards</h3>
-                          <p className="text-gray-600 mb-3">Complete this activity to earn:</p>
-                          <div className="flex items-center gap-3">
-                            <div className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full flex items-center gap-1">
-                              <Star className="h-4 w-4" />
-                              <span className="font-bold">{selectedLevel.xpReward} XP</span>
-                            </div>
-                            {selectedLevel.difficulty === 'medium' && (
-                              <div className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full flex items-center gap-1">
-                                <Trophy className="h-4 w-4" />
-                                <span className="font-bold">Achievement</span>
-                              </div>
-                            )}
-                            {selectedLevel.difficulty === 'hard' && (
-                              <div className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full flex items-center gap-1">
-                                <Zap className="h-4 w-4" />
-                                <span className="font-bold">Special Badge</span>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <AlertDialogFooter className="flex-col sm:flex-row gap-2">
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleStartLevel}>Start Activity</AlertDialogAction>
-                  </AlertDialogFooter>
-                </>
-              )}
-            </AlertDialogContent>
-          </AlertDialog>
-          
-          {renderLevelContent()}
-          
-          {showXpAnimation && (
-            <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
-              <div className="bg-yellow-500 text-white px-6 py-4 rounded-full flex items-center gap-2 animate-bounce shadow-xl">
-                <Star className="h-6 w-6" />
-                <span className="text-xl font-bold">+{earnedXp} XP</span>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const CheckCircle = (props: React.ComponentProps<typeof Star>) => {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-      <polyline points="22 4 12 14.01 9 11.01"></polyline>
-    </svg>
-  );
-};
-
-const Clock = (props: React.ComponentProps<typeof Star>) => {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <circle cx="12" cy="12" r="10"></circle>
-      <polyline points="12 6 12 12 16 14"></polyline>
-    </svg>
-  );
-};
-
-export default KingdomMap;
+                top
