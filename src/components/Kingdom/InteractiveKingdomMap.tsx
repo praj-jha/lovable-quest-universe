@@ -2,6 +2,9 @@
 import React, { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import KingdomMap from './KingdomMap';
+import { Link } from 'react-router-dom';
+import { ArrowRight } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface InteractiveKingdomMapProps {
   demoMode?: boolean;
@@ -23,6 +26,17 @@ const InteractiveKingdomMap: React.FC<InteractiveKingdomMapProps> = ({ demoMode 
             onZoneSelect={handleZoneSelect} 
             demoMode={demoMode} 
           />
+          
+          {demoMode && (
+            <div className="mt-6 flex justify-center">
+              <Link to="/dashboard">
+                <Button className="bg-lovable-blue hover:bg-lovable-purple transition-colors flex items-center gap-2">
+                  Explore Full Kingdom Map
+                  <ArrowRight size={16} />
+                </Button>
+              </Link>
+            </div>
+          )}
         </div>
       </Card>
     </div>

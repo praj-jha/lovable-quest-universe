@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, BookMarked, FileText, Zap, Users, BookOpenCheck } from 'lucide-react';
@@ -38,8 +39,8 @@ const Navbar: React.FC = () => {
       path: '/parent-analytics'
     }, 
     {
-      name: 'For Educators',
-      path: '/#for-educators'
+      name: 'Family Learning Mode',
+      path: '/family'
     }, 
     {
       name: 'Dashboard',

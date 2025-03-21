@@ -5,6 +5,8 @@ import HeroSection from '@/components/Hero/HeroSection';
 import FeaturesSection from '@/components/Features/FeaturesSection';
 import ForEducatorsSection from '@/components/Educators/ForEducatorsSection';
 import InteractiveKingdomMap from '@/components/Kingdom/InteractiveKingdomMap';
+import { Users, Heart, Trophy, BookOpen } from 'lucide-react';
+import { Card } from '@/components/ui/card';
 
 const Index = () => {
   return (
@@ -14,6 +16,38 @@ const Index = () => {
       </div>
       
       <div className="container px-4 mx-auto py-16">
+        <div id="family-learning" className="py-12 mb-16">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Family Learning Mode</h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Learn, play, and grow together as a family with our innovative co-learning experience.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+            {[
+              { icon: <Users className="text-lovable-purple" size={24} />, title: "Learn Together", desc: "Complete activities designed for family participation" },
+              { icon: <Heart className="text-lovable-pink" size={24} />, title: "Build Bonds", desc: "Create lasting memories through shared learning experiences" },
+              { icon: <Trophy className="text-lovable-yellow" size={24} />, title: "Earn Rewards", desc: "Collect badges and points as a family" },
+              { icon: <BookOpen className="text-lovable-green" size={24} />, title: "Track Progress", desc: "Monitor growth and achievements together" }
+            ].map((feature, index) => (
+              <Card key={index} className="p-6 flex flex-col items-center text-center hover:shadow-lg transition-shadow">
+                <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center mb-4">
+                  {feature.icon}
+                </div>
+                <h3 className="font-semibold text-lg mb-2">{feature.title}</h3>
+                <p className="text-gray-600">{feature.desc}</p>
+              </Card>
+            ))}
+          </div>
+          
+          <div className="text-center">
+            <Link to="/family" className="inline-block bg-gradient-to-r from-lovable-purple to-lovable-blue text-white px-8 py-3 rounded-full font-medium hover:opacity-90 shadow-md transition-all transform hover:-translate-y-1">
+              Try Family Learning Mode
+            </Link>
+          </div>
+        </div>
+      
         <div id="kingdom-map" className="py-12">
           <div className="text-center mb-10">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Explore Our Interactive Learning Kingdom</h2>
