@@ -7,34 +7,13 @@ exports.register = async (req, res) => {
   try {
     const { username, email, password, parentEmail, age } = req.body;
 
-    // Validate input
-    if (!username || !email || !password) {
+    // Check if user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
       return res.status(400).json({
         success: false,
-        message: 'Please provide all required fields'
+        message: 'User with this email already exists'
       });
-    }
-
-    // Check if user already exists
-    const existingUser = await User.findOne({ 
-      $or: [
-        { email: email },
-        { username: username }
-      ]
-    });
-    
-    if (existingUser) {
-      if (existingUser.email === email) {
-        return res.status(400).json({
-          success: false,
-          message: 'User with this email already exists'
-        });
-      } else {
-        return res.status(400).json({
-          success: false,
-          message: 'Username already taken'
-        });
-      }
     }
 
     // Create new user
@@ -45,9 +24,7 @@ exports.register = async (req, res) => {
       password: hashedPassword,
       parentEmail,
       age,
-      role: 'student',
-      createdAt: Date.now(),
-      lastLogin: Date.now()
+      role: 'student'
     });
 
     await user.save();
@@ -66,14 +43,10 @@ exports.register = async (req, res) => {
         id: user._id,
         username: user.username,
         email: user.email,
-        role: user.role,
-        avatar: user.avatar,
-        level: user.level,
-        xp: user.xp
+        role: user.role
       }
     });
   } catch (error) {
-    console.error('Registration error:', error);
     res.status(500).json({
       success: false,
       message: 'Error registering user',
@@ -104,10 +77,6 @@ exports.login = async (req, res) => {
       });
     }
 
-    // Update last login
-    user.lastLogin = Date.now();
-    await user.save();
-
     // Generate JWT
     const token = jwt.sign(
       { id: user._id, username: user.username, role: user.role },
@@ -122,14 +91,10 @@ exports.login = async (req, res) => {
         id: user._id,
         username: user.username,
         email: user.email,
-        role: user.role,
-        avatar: user.avatar,
-        level: user.level,
-        xp: user.xp
+        role: user.role
       }
     });
   } catch (error) {
-    console.error('Login error:', error);
     res.status(500).json({
       success: false,
       message: 'Error logging in',
@@ -152,7 +117,6 @@ exports.getProfile = async (req, res) => {
       data: user
     });
   } catch (error) {
-    console.error('Get profile error:', error);
     res.status(500).json({
       success: false,
       message: 'Error fetching profile',
@@ -163,20 +127,11 @@ exports.getProfile = async (req, res) => {
 
 exports.updateProfile = async (req, res) => {
   try {
-    const { username, age, parentEmail, avatar, preferences } = req.body;
-    
-    // Create update object with only provided fields
-    const updateData = {};
-    if (username) updateData.username = username;
-    if (age) updateData.age = age;
-    if (parentEmail) updateData.parentEmail = parentEmail;
-    if (avatar) updateData.avatar = avatar;
-    if (preferences) updateData.preferences = preferences;
-    
+    const { username, age, parentEmail, avatar } = req.body;
     const updatedUser = await User.findByIdAndUpdate(
       req.user.id,
-      updateData,
-      { new: true, runValidators: true }
+      { username, age, parentEmail, avatar },
+      { new: true }
     ).select('-password');
     
     if (!updatedUser) {
@@ -191,7 +146,6 @@ exports.updateProfile = async (req, res) => {
       data: updatedUser
     });
   } catch (error) {
-    console.error('Update profile error:', error);
     res.status(500).json({
       success: false,
       message: 'Error updating profile',
@@ -217,41 +171,9 @@ exports.getUserAchievements = async (req, res) => {
       data: user.achievements
     });
   } catch (error) {
-    console.error('Get achievements error:', error);
     res.status(500).json({
       success: false,
       message: 'Error fetching achievements',
-      error: error.message
-    });
-  }
-};
-
-// Add a new function to get user stats
-exports.getUserStats = async (req, res) => {
-  try {
-    const userId = req.user.id;
-    const user = await User.findById(userId).select('xp level achievements');
-    
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: 'User not found'
-      });
-    }
-    
-    res.json({
-      success: true,
-      data: {
-        xp: user.xp,
-        level: user.level,
-        achievementsCount: user.achievements.length
-      }
-    });
-  } catch (error) {
-    console.error('Get user stats error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Error fetching user stats',
       error: error.message
     });
   }

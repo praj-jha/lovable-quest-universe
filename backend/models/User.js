@@ -1,27 +1,23 @@
 
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
 
-const UserSchema = new Schema({
+const UserSchema = new mongoose.Schema({
   username: {
     type: String,
-    required: [true, 'Username is required'],
+    required: true,
     unique: true,
-    trim: true,
-    minlength: [3, 'Username must be at least 3 characters']
+    trim: true
   },
   email: {
     type: String,
-    required: [true, 'Email is required'],
+    required: true,
     unique: true,
     trim: true,
-    lowercase: true,
-    match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please provide a valid email']
+    lowercase: true
   },
   password: {
     type: String,
-    required: [true, 'Password is required'],
-    minlength: [6, 'Password must be at least 6 characters']
+    required: true
   },
   parentEmail: {
     type: String,
@@ -29,9 +25,7 @@ const UserSchema = new Schema({
     lowercase: true
   },
   age: {
-    type: Number,
-    min: [3, 'Age must be at least 3'],
-    max: [18, 'Age must be less than 19']
+    type: Number
   },
   role: {
     type: String,
@@ -50,10 +44,6 @@ const UserSchema = new Schema({
     type: Number,
     default: 0
   },
-  preferences: {
-    grade: String,
-    subjects: [String]
-  },
   achievements: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Achievement'
@@ -67,26 +57,5 @@ const UserSchema = new Schema({
     default: Date.now
   }
 });
-
-// Add virtual for user's progress
-UserSchema.virtual('progress', {
-  ref: 'Progress',
-  localField: '_id',
-  foreignField: 'userId'
-});
-
-// Add method to update user XP
-UserSchema.methods.addXP = async function(amount) {
-  this.xp += amount;
-  
-  // Level up logic (simple example: every 100 XP = 1 level)
-  const newLevel = Math.floor(this.xp / 100) + 1;
-  if (newLevel > this.level) {
-    this.level = newLevel;
-  }
-  
-  await this.save();
-  return this;
-};
 
 module.exports = mongoose.model('User', UserSchema);

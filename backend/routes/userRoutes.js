@@ -19,7 +19,4 @@ router.put('/profile', authenticateUser, userController.updateProfile);
 // Get user achievements
 router.get('/achievements', authenticateUser, userController.getUserAchievements);
 
-// Get user stats (XP, level, achievements count)
-router.get('/stats', authenticateUser, userController.getUserStats);
-
 module.exports = router;
