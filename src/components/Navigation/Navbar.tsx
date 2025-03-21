@@ -39,8 +39,8 @@ const Navbar: React.FC = () => {
       path: '/parent-analytics'
     }, 
     {
-      name: 'Family Learning Mode',
-      path: '/family'
+      name: 'Book Home Tutors',
+      path: '/book-tutors'
     }, 
     {
       name: 'Dashboard',

@@ -15,6 +15,8 @@ const FamilyMode = lazy(() => import("./pages/FamilyMode"));
 const ParentAnalytics = lazy(() => import("./pages/ParentAnalytics"));
 const ForEducators = lazy(() => import("./pages/ForEducators"));
 const IndianSpecificFeatures = lazy(() => import("./pages/IndianSpecificFeatures"));
+const BookTutors = lazy(() => import("./pages/BookTutors"));
+const TutorProfile = lazy(() => import("./pages/TutorProfile"));
 
 const queryClient = new QueryClient();
 
@@ -54,6 +56,16 @@ const App = () => (
             <Route path="/indian-features" element={
               <Suspense fallback={<LoadingFallback />}>
                 <IndianSpecificFeatures />
+              </Suspense>
+            } />
+            <Route path="/book-tutors" element={
+              <Suspense fallback={<LoadingFallback />}>
+                <BookTutors />
+              </Suspense>
+            } />
+            <Route path="/book-tutors/:id" element={
+              <Suspense fallback={<LoadingFallback />}>
+                <TutorProfile />
               </Suspense>
             } />
           </Route>
