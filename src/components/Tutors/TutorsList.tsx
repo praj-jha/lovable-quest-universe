@@ -41,15 +41,18 @@ const TutorsList: React.FC = () => {
   // Fetch tutors based on search params
   const { data, isLoading, error } = useQuery<TutorSearchResponse>({
     queryKey: ['tutors', subject, location, expMin, expMax, grade, page],
-    queryFn: () => tutorApi.searchTutors({
-      subject,
-      location,
-      experienceMin: expMin,
-      experienceMax: expMax,
-      grade,
-      page,
-      limit: 6
-    })
+    queryFn: async () => {
+      const result = await tutorApi.searchTutors({
+        subject,
+        location,
+        experienceMin: expMin,
+        experienceMax: expMax,
+        grade,
+        page,
+        limit: 6
+      });
+      return result as TutorSearchResponse;
+    }
   });
   
   const tutors = data?.tutors || [];

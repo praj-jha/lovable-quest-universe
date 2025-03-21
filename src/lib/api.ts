@@ -1,5 +1,6 @@
 
 import axios from 'axios';
+import { Tutor } from '@/components/Tutors/TutorsList';
 
 // Create an axios instance with default config
 const api = axios.create({
@@ -67,17 +68,20 @@ export const progressApi = {
   getLeaderboard: () => api.get('/progress/leaderboard')
 };
 
-// New tutor API endpoints
+// Define the tutor search params interface
+export interface TutorSearchParams {
+  subject?: string;
+  location?: string;
+  experienceMin?: number;
+  experienceMax?: number;
+  grade?: string;
+  page: number;
+  limit: number;
+}
+
+// Tutor API endpoints with proper type definitions
 export const tutorApi = {
-  searchTutors: (params: {
-    subject?: string;
-    location?: string;
-    experienceMin?: number;
-    experienceMax?: number;
-    grade?: string;
-    page: number;
-    limit: number;
-  }) => {
+  searchTutors: (params: TutorSearchParams): Promise<{ tutors: Tutor[]; totalPages: number }> => {
     // In a real implementation, this would make an API call
     // For now, simulate a response with mock data
     return new Promise((resolve) => {
@@ -175,12 +179,12 @@ export const tutorApi = {
     });
   },
   
-  getTutorById: (id: string) => {
+  getTutorById: (id: string): Promise<Tutor> => {
     // In a real implementation, this would make an API call
     // For now, simulate a response with mock data
     return new Promise((resolve) => {
       setTimeout(() => {
-        const tutors = {
+        const tutors: Record<string, Tutor> = {
           "t1": {
             id: "t1",
             name: "Neha Sharma",
@@ -270,7 +274,7 @@ export const tutorApi = {
     });
   },
   
-  bookSession: (bookingData: any) => {
+  bookSession: (bookingData: any): Promise<{ success: boolean; bookingId: string }> => {
     // In a real implementation, this would make an API call
     // For now, simulate a successful booking
     return new Promise((resolve) => {

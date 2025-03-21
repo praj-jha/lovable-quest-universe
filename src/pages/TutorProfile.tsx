@@ -32,7 +32,10 @@ const TutorProfile = () => {
   
   const { data: tutor, isLoading, error } = useQuery<Tutor>({
     queryKey: ['tutor', id],
-    queryFn: () => tutorApi.getTutorById(id || ''),
+    queryFn: async () => {
+      const result = await tutorApi.getTutorById(id || '');
+      return result as Tutor;
+    },
     enabled: !!id
   });
   
