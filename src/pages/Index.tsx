@@ -1,13 +1,10 @@
-
 import React from 'react';
 import HeroSection from '@/components/Hero/HeroSection';
 import FeaturesSection from '@/components/Features/FeaturesSection';
 import ForEducatorsSection from '@/components/Educators/ForEducatorsSection';
 import InteractiveKingdomMap from '@/components/Kingdom/InteractiveKingdomMap';
-
 const Index = () => {
-  return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-blue-50">
+  return <div className="min-h-screen bg-gradient-to-b from-white to-blue-50">
       <div id="hero">
         <HeroSection />
       </div>
@@ -85,7 +82,7 @@ const Index = () => {
         <div className="container px-4 mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
-              <h3 className="font-bold text-lg mb-4">Lovable Quest</h3>
+              <h3 className="font-bold text-lg mb-4">Cogno Junior</h3>
               <p className="text-gray-400">Making learning an exciting adventure for children everywhere.</p>
             </div>
             
@@ -125,8 +122,6 @@ const Index = () => {
           </div>
         </div>
       </footer>
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
