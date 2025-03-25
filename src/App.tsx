@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -17,6 +16,15 @@ const ForEducators = lazy(() => import("./pages/ForEducators"));
 const IndianSpecificFeatures = lazy(() => import("./pages/IndianSpecificFeatures"));
 const BookTutors = lazy(() => import("./pages/BookTutors"));
 const TutorProfile = lazy(() => import("./pages/TutorProfile"));
+
+// Quiz System Pages
+const TeacherDashboard = lazy(() => import("./pages/Quiz/TeacherDashboard"));
+const StudentDashboard = lazy(() => import("./pages/Quiz/StudentDashboard"));
+const TakeQuiz = lazy(() => import("./pages/Quiz/TakeQuiz"));
+const QuizResult = lazy(() => import("./pages/Quiz/QuizResult"));
+
+// Family Learning Pages
+const FamilyDashboard = lazy(() => import("./pages/Family/FamilyDashboard"));
 
 const queryClient = new QueryClient();
 
@@ -38,11 +46,37 @@ const App = () => (
                 <Dashboard />
               </Suspense>
             } />
-            <Route path="/family" element={
+            
+            {/* Quiz System Routes */}
+            <Route path="/teacher" element={
               <Suspense fallback={<LoadingFallback />}>
-                <FamilyMode />
+                <TeacherDashboard />
               </Suspense>
             } />
+            <Route path="/student" element={
+              <Suspense fallback={<LoadingFallback />}>
+                <StudentDashboard />
+              </Suspense>
+            } />
+            <Route path="/quiz/:id/take" element={
+              <Suspense fallback={<LoadingFallback />}>
+                <TakeQuiz />
+              </Suspense>
+            } />
+            <Route path="/quiz/result/:id" element={
+              <Suspense fallback={<LoadingFallback />}>
+                <QuizResult />
+              </Suspense>
+            } />
+            
+            {/* Family Learning Routes */}
+            <Route path="/family" element={
+              <Suspense fallback={<LoadingFallback />}>
+                <FamilyDashboard />
+              </Suspense>
+            } />
+            
+            {/* Other Routes */}
             <Route path="/parent-analytics" element={
               <Suspense fallback={<LoadingFallback />}>
                 <ParentAnalytics />

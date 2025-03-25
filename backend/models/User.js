@@ -44,6 +44,19 @@ const UserSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
+  schoolId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'School'
+  },
+  familyId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Family'
+  },
+  childProfiles: [{
+    name: String,
+    age: Number,
+    avatar: String
+  }],
   achievements: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Achievement'
