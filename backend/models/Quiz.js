@@ -17,10 +17,6 @@ const QuestionSchema = new mongoose.Schema({
   points: {
     type: Number,
     default: 10
-  },
-  timeLimit: {
-    type: Number, // in seconds
-    default: 30
   }
 });
 
@@ -33,26 +29,10 @@ const QuizSchema = new mongoose.Schema({
   description: {
     type: String
   },
-  creator: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
-  },
-  subject: {
-    type: String,
-    required: true
-  },
-  gradeLevel: {
-    type: Number,
-    required: true
-  },
-  schoolId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'School'
-  },
   zoneId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Zone'
+    ref: 'Zone',
+    required: true
   },
   questions: {
     type: [QuestionSchema],
